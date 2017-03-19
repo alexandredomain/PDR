@@ -36,5 +36,7 @@ Makefile*
 # QtCtreator CMake
 CMakeLists.txt.user*
 
+# Perso 
 Générés/
 Relevés/
+PDR
