@@ -5,6 +5,30 @@
 // Librairie LIBXLS
 #include "xls.h"
 
+
+void removeEmptyLines() {
+    FILE * fichierCSV = NULL;
+    FILE * fichierCSVfinal = NULL;
+
+    fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
+    fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
+    int c = 0;
+    char line[100];
+    while(fgets(line, sizeof(line), fichierCSV) != NULL) {      //read each line of the file
+        if (line[0] != '\n') {
+            fprintf(fichierCSVfinal, "%s", fgets(line, sizeof(line), fichierCSV));
+        }
+        else {
+            c++;
+        }
+    }
+    printf("Suppression de %i lignes vides dans le fichier CSV...\n", c);
+    fclose(fichierCSV);
+    fclose(fichierCSVfinal);
+    remove("../Générés/conversionCSV-temp.txt");
+
+}
+
 void XLStoCSV (char * cheminFichierExcel) {
     int i;
 
@@ -30,7 +54,7 @@ void XLStoCSV (char * cheminFichierExcel) {
     else {
         fclose(fichierExcel); // on ferme le fichier original - si on est là, c'est qu'il existe.
 
-        fichierCSV = fopen("../Générés/conversionCSV.txt", "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
+        fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
 
         pWB = xls_open(cheminFichierExcel, "UTF-8"); // ouverture du fichier XLS à lire
 
@@ -51,7 +75,7 @@ void XLStoCSV (char * cheminFichierExcel) {
 
                     // process cells
                     if (lineWritten) {
-                        printf("\n");
+                        //printf("\n");
                         fprintf(fichierCSV, "\n");
                     }
                     else {
@@ -62,31 +86,21 @@ void XLStoCSV (char * cheminFichierExcel) {
                         if (!row -> cells.cell[tt].ishiden) {
                             // display the colspan as only one cell, but reject rowspans (they can't be converted to CSV)
                             if (row -> cells.cell[tt].rowspan > 1) {
-                                printf("%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
+                                //printf("%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
                                 fprintf(fichierCSV, "%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
-                                return 1;
                             }
 
                             // display the value of the cell (either numeric or string)
                             if (row -> cells.cell[tt].id == 0x27e || row -> cells.cell[tt].id == 0x0BD || row -> cells.cell[tt].id == 0x203) {
-                                printf("%.15g;", row -> cells.cell[tt].d);
+                                //printf("%.15g;", row -> cells.cell[tt].d);
                                 fprintf(fichierCSV, "%.15g;", row -> cells.cell[tt].d);
-                            }
-
-                            else {
-                                printf("");
-                                fprintf(fichierCSV, "");
                             }
                         }
                     }
                 }
             }
-
+            fclose(fichierCSV);
             xls_close(pWB);
-            return EXIT_SUCCESS;
         }
-        fclose(fichierCSV);
     }
-
-    return EXIT_FAILURE;
 }

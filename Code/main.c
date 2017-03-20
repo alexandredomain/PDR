@@ -12,6 +12,7 @@
 int main(int pintArgc, char * ptstrArgv[]) {
 
     XLStoCSV("../Relevés/GCE1_Elec.xls");
+    removeEmptyLines();
 
     ///////////////////
     // TEST SQLITE 3 //
