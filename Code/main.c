@@ -25,6 +25,8 @@ int main(int pintArgc, char * ptstrArgv[]) {
     char *feedbackErrorSQL = NULL;
     int codeRetour = 0;
     //sqlite3_stmt *requete;
+    // remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
+
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
     // ouverture ou création de la base de données
 
@@ -34,10 +36,9 @@ int main(int pintArgc, char * ptstrArgv[]) {
         //on ferme la base de données afin de libérer la mémoire
         sqlite3_close(db);
         //on stoppe l'exécution du programme
-        //return 1;
     }
 
-    codeRetour = sqlite3_exec(db, "CREATE TABLE batiment (id INTEGER PRIMARY KEY AUTOINCREMENT, Nom TEXT, Surface INTEGER)", NULL, 0, &feedbackErrorSQL);
+    codeRetour = sqlite3_exec(db, "CREATE TABLE batiment (Id INTEGER PRIMARY KEY AUTOINCREMENT, Nom TEXT, Surface INTEGER, Date_jour TEXT)", NULL, 0, &feedbackErrorSQL);
 
     //si on a une erreur avec un message d'erreur alors on libére la mémoire pour le message d'erreur
     if (codeRetour && feedbackErrorSQL != NULL){
@@ -49,7 +50,13 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
     else {
         printf("Insertion d'un nouveau batiment !\n");
-        sqlite3_exec(db, "INSERT INTO batiment (nom, surface) VALUES ('Test', '245.5')", NULL, 0, &feedbackErrorSQL);
+
+        // Requête factice avec prise en charge de la date
+        // SELECT date('1899-12-29', '+42737 day');
+        char *requete = NULL;
+        asprintf(&requete, "INSERT INTO batiment (Nom, Surface, Date_jour) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", "Tom", 20, 42736);
+
+        codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
         if (codeRetour && feedbackErrorSQL != NULL){
             printf(feedbackErrorSQL);
             sqlite3_free(feedbackErrorSQL);
@@ -57,10 +64,10 @@ int main(int pintArgc, char * ptstrArgv[]) {
         }
     }
 
-
+;
 
     sqlite3_close(db);
-    
+
     ///////////////////////
     // FIN TEST SQLITE 3 //
     ///////////////////////

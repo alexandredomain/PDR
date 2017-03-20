@@ -10,6 +10,14 @@ void removeEmptyLines() {
     FILE * fichierCSV = NULL;
     FILE * fichierCSVfinal = NULL;
 
+    char line[100];
+    fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
+    fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
+    int c = 0;
+    fgetc(stdin);
+    while(fgets(line, sizeof(line), fichierCSV) != NULL) {      //read each line of the file
+        if (line[0] != '\n') {
+            fprintf(fichierCSVfinal, "%s", line);
     fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
     fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
     int c = 0;
