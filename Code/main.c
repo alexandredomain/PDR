@@ -3,11 +3,10 @@
 #include <string.h>
 #include <ctype.h>
 
-// Librairie SQLite3
-#include "sqlite3.h"
-
 // Header perso
-#include "fonctions.h"
+#include "traitementXLS.h"
+#include "requetesSQL.h"
+#include "sqlite3.h"
 
 int main(int pintArgc, char * ptstrArgv[]) {
 
@@ -20,23 +19,10 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
     printf("SQLite_version %s\n", sqlite3_libversion());
 
-    //toutes nos variables utilisées dans le programme
     sqlite3 *db;
+    creerBDD(&db);
     char *feedbackErrorSQL = NULL;
     int codeRetour = 0;
-    //sqlite3_stmt *requete;
-    // remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
-
-    codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
-    // ouverture ou création de la base de données
-
-    if (codeRetour) {
-        //affiche une erreur sur la console qui explique pourquoi la base de données n'a pas pu être ouverte (vu que certaines consoles gèrent mal les accents ,je les ai omis)
-        printf("Impossible d'ouvrir la base de données : %s\n", sqlite3_errmsg(db));
-        //on ferme la base de données afin de libérer la mémoire
-        sqlite3_close(db);
-        //on stoppe l'exécution du programme
-    }
 
     codeRetour = sqlite3_exec(db, "CREATE TABLE batiment (Id INTEGER PRIMARY KEY AUTOINCREMENT, Nom TEXT, Surface INTEGER, Date_jour TEXT)", NULL, 0, &feedbackErrorSQL);
 

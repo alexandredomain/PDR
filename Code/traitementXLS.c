@@ -10,31 +10,26 @@ void removeEmptyLines() {
     FILE * fichierCSV = NULL;
     FILE * fichierCSVfinal = NULL;
 
-    char line[100];
     fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
     fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
+
+    char line[100];
     int c = 0;
-    fgetc(stdin);
+
     while(fgets(line, sizeof(line), fichierCSV) != NULL) {      //read each line of the file
         if (line[0] != '\n') {
             fprintf(fichierCSVfinal, "%s", line);
-    fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
-    fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
-    int c = 0;
-    char line[100];
-    while(fgets(line, sizeof(line), fichierCSV) != NULL) {      //read each line of the file
-        if (line[0] != '\n') {
-            fprintf(fichierCSVfinal, "%s", fgets(line, sizeof(line), fichierCSV));
         }
         else {
             c++;
         }
     }
     printf("Suppression de %i lignes vides dans le fichier CSV...\n", c);
+
     fclose(fichierCSV);
-    fclose(fichierCSVfinal);
     remove("../Générés/conversionCSV-temp.txt");
 
+    fclose(fichierCSVfinal);
 }
 
 void XLStoCSV (char * cheminFichierExcel) {
@@ -50,7 +45,7 @@ void XLStoCSV (char * cheminFichierExcel) {
     FILE * fichierCSV = NULL;
 
     // Ouverture du fichier Excel
-    //const char cheminFichierExcel[50] = "/home/.....xls";
+        //const char cheminFichierExcel[50] = "/home/.....xls";
     fichierExcel = fopen(cheminFichierExcel, "r");
 
     // Affichage d'un message d'erreur si le chemin est incorrecte

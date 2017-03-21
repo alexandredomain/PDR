@@ -9,7 +9,8 @@ SOURCES += \
     ole.c \
     sqlite3.c \
     main.c \
-    fonctions.c
+    traitementXLS.c \
+    requetesSQL.c
 
 HEADERS += \
     xlstypes.h \
@@ -21,7 +22,8 @@ HEADERS += \
     brdb.h \
     brdb.c.h \
     sqlite3.h \
-    fonctions.h
+    traitementXLS.h \
+    requetesSQL.h
 
 LIBS += -ldl -lpthread
 
