@@ -25,19 +25,29 @@ void openBDD(sqlite3 *db) {
     }
 }
 
-void createTableBatiment(sqlite3 *db){
+void createTableBatiment(sqlite3 *db) {
+    requeteModele(db, "CREATE TABLE IF NOT EXISTS batiment (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, surface INTEGER, date_jour TEXT)", "Création de la TABLE batiment");
+}
+
+void requeteModele(sqlite3 *db, char *requete, char *intitule) {
     int codeRetour = 0;
     char *feedbackErrorSQL = NULL;
+    // Mise en forme du message de console
+    char prefix[100] = "";
+    strcat(prefix, intitule);
+    strcat(prefix, "... ");
 
-    codeRetour = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS batiment (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, surface INTEGER, date_jour TEXT)", NULL, 0, &feedbackErrorSQL);
+    codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
 
     if (codeRetour && feedbackErrorSQL != NULL){
+        printf(strcat(prefix, "Erreur : "));
         printf(feedbackErrorSQL);
+        printf("\n");
         sqlite3_free(feedbackErrorSQL);
         feedbackErrorSQL = NULL;
     }
 
     else {
-        printf("Création de la TABLE batiment... Ok.\n");
+        printf(strcat(prefix, "Ok.\n"));
     }
 }

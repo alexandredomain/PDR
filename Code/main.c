@@ -23,6 +23,7 @@ int main(int pintArgc, char * ptstrArgv[]) {
     versionSQLite();
     openBDD(&db);
     createTableBatiment(db);
+    createTableBatiment(db);
 
     // Requête factice avec prise en charge de la date
     // SELECT date('1899-12-29', '+42737 day');
