@@ -10,51 +10,36 @@
 
 int main(int pintArgc, char * ptstrArgv[]) {
 
+    printf("*************** Traitement du fichier *.xls en format texte ***************\n");
     XLStoCSV("../Relevés/GCE1_Elec.xls");
-    removeEmptyLines();
+    removeEmptyLinesCSV();
+    printf("***************************************************************************\n\n");
 
-    ///////////////////
-    // TEST SQLITE 3 //
-    ///////////////////
 
-    printf("SQLite_version %s\n", sqlite3_libversion());
+    printf("************** Insertion des données dans la base de données **************\n");
 
-    sqlite3 *db;
-    creerBDD(&db);
-    char *feedbackErrorSQL = NULL;
+    sqlite3 *db; // bdd
+
+    versionSQLite();
+    openBDD(&db);
+    createTableBatiment(db);
+
+    // Requête factice avec prise en charge de la date
+    // SELECT date('1899-12-29', '+42737 day');
+    char *requete = NULL;
+    asprintf(&requete, "INSERT INTO batiment (nom, surface, date_jour) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", "Tom", 20, 42736);
     int codeRetour = 0;
+    char *feedbackErrorSQL = NULL;
 
-    codeRetour = sqlite3_exec(db, "CREATE TABLE batiment (Id INTEGER PRIMARY KEY AUTOINCREMENT, Nom TEXT, Surface INTEGER, Date_jour TEXT)", NULL, 0, &feedbackErrorSQL);
-
-    //si on a une erreur avec un message d'erreur alors on libére la mémoire pour le message d'erreur
-    if (codeRetour && feedbackErrorSQL != NULL){
+    codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
+    if (codeRetour && feedbackErrorSQL != NULL) {
         printf(feedbackErrorSQL);
-        //ici on ignore l'erreur
         sqlite3_free(feedbackErrorSQL);
         feedbackErrorSQL = NULL;
     }
 
-    else {
-        printf("Insertion d'un nouveau batiment !\n");
+    sqlite3_close_v2(&db);
 
-        // Requête factice avec prise en charge de la date
-        // SELECT date('1899-12-29', '+42737 day');
-        char *requete = NULL;
-        asprintf(&requete, "INSERT INTO batiment (Nom, Surface, Date_jour) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", "Tom", 20, 42736);
-
-        codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
-        if (codeRetour && feedbackErrorSQL != NULL){
-            printf(feedbackErrorSQL);
-            sqlite3_free(feedbackErrorSQL);
-            feedbackErrorSQL = NULL;
-        }
-    }
-
-;
-
-    sqlite3_close(db);
-
-    ///////////////////////
-    // FIN TEST SQLITE 3 //
-    ///////////////////////
+    printf("***************************************************************************\n\n");
+    return 0;
 }

@@ -1,3 +1,3 @@
-void removeEmptyLines ();
+void removeEmptyLinesCSV();
 
-void XLStoCSV (char * cheminFichierExcel);
+void XLStoCSV(char * cheminFichierExcel);

@@ -6,7 +6,7 @@
 #include "xls.h"
 
 
-void removeEmptyLines() {
+void removeEmptyLinesCSV() {
     FILE * fichierCSV = NULL;
     FILE * fichierCSVfinal = NULL;
 
@@ -24,7 +24,7 @@ void removeEmptyLines() {
             c++;
         }
     }
-    printf("Suppression de %i lignes vides dans le fichier CSV...\n", c);
+    printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
 
     fclose(fichierCSV);
     remove("../Générés/conversionCSV-temp.txt");
@@ -63,7 +63,7 @@ void XLStoCSV (char * cheminFichierExcel) {
 
         // process workbook if found
         if (pWB != NULL) {
-
+            printf("Conversion en cours... ");
             // process all sheets
             for (i = 0; i < pWB -> sheets.count; i++) {
                 int lineWritten = 0;
@@ -104,6 +104,7 @@ void XLStoCSV (char * cheminFichierExcel) {
             }
             fclose(fichierCSV);
             xls_close(pWB);
+            printf("Conversion terminée.\n");
         }
     }
 }
