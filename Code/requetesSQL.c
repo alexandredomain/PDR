@@ -26,7 +26,25 @@ void openBDD(sqlite3 *db) {
 }
 
 void createTableBatiment(sqlite3 *db) {
-    requeteModele(db, "CREATE TABLE IF NOT EXISTS batiment (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, surface INTEGER, date_jour TEXT)", "Création de la TABLE batiment");
+    requeteModele(db, "CREATE TABLE IF NOT EXISTS batiment (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, surface INTEGER, date_jour TEXT);", "Création de la TABLE batiment");
+}
+
+void insertBatiment(sqlite3 *db, char *nom, int surface, int jour) {
+    char *requete = NULL;
+    asprintf(&requete, "INSERT INTO batiment (nom, surface, date_jour) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", nom, surface, jour);
+    requeteModele(db, requete, "Insertion d'un batiment");
+}
+
+void update(sqlite3 *db, char* table, char *champ, char *value) {
+    char *requete = NULL;
+    asprintf(&requete, "UPDATE %s SET %s = '%s';", table, champ, value);
+    requeteModele(db, requete, "Update de la table");
+}
+
+void updateWithCondition(sqlite3 *db, char* table, char *champ, char *value, char *condition) {
+    char *requete = NULL;
+    asprintf(&requete, "UPDATE %s SET %s = '%s' WHERE %s;", table, champ, value, condition);
+    requeteModele(db, requete, "Update de la table");
 }
 
 void requeteModele(sqlite3 *db, char *requete, char *intitule) {

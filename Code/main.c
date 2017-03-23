@@ -23,20 +23,10 @@ int main(int pintArgc, char * ptstrArgv[]) {
     versionSQLite();
     openBDD(&db);
     createTableBatiment(db);
-
-    // Requête factice avec prise en charge de la date
-    // SELECT date('1899-12-29', '+42737 day');
-    char *requete = NULL;
-    asprintf(&requete, "INSERT INTO batiment (nom, surface, date_jour) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", "Tom", 20, 42644);
-    int codeRetour = 0;
-    char *feedbackErrorSQL = NULL;
-
-    codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
-    if (codeRetour && feedbackErrorSQL != NULL) {
-        printf(feedbackErrorSQL);
-        sqlite3_free(feedbackErrorSQL);
-        feedbackErrorSQL = NULL;
-    }
+    insertBatiment(db, "Test1", 54, 44563);
+    insertBatiment(db, "Test2", 55, 44231);
+    insertBatiment(db, "Test3", 60, 44731);
+    updateWithCondition(db, "batiment", "nom", "update", "surface > 54");
 
     sqlite3_close_v2(&db);
 
