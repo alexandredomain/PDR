@@ -10,6 +10,8 @@
 
 int main(int pintArgc, char * ptstrArgv[]) {
 
+    sqlite3 *db; // initialisation de la base de données
+
     printf("*************** Traitement du fichier *.xls en format texte ***************\n");
     XLStoCSV("../Relevés/SB_CO2.xls");
     removeEmptyLinesCSV();
@@ -18,18 +20,15 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
 
     printf("************** Insertion des données dans la base de données **************\n");
-    sqlite3 *db; // bdd
-
     versionSQLite();
     openBDD(&db);
-    createTableBatiment(db);
-    insertBatiment(db, "Test1", 54, 44563);
-    insertBatiment(db, "Test2", 55, 44231);
-    insertBatiment(db, "Test3", 60, 44731);
+    createTableListeBatiments(db);
+    createTableBatiment(db, "DIA");
+    insertDataBatiment(db,"DIA","Elec",156.34,42795);
+    /*
     updateWithCondition(db, "batiment", "nom", "update", "surface > 54");
-
+    */
     sqlite3_close_v2(&db);
-
     printf("***************************************************************************\n\n");
     return 0;
 }
