@@ -46,6 +46,7 @@ void requeteModele(sqlite3 *db, char *requete, char *intitule) {
     else {
         printf(strcat(prefix, "Ok.\n"));
     }
+    free(feedbackErrorSQL);
 }
 
 void createTableListeBatiments(sqlite3 *db) {
@@ -58,14 +59,18 @@ void createTableBatiment(sqlite3 *db, char *nom) {
     char *intitule=NULL;
     asprintf(&intitule, "Création de la table \"%s\"", nom);
     requeteModele(db, requete, intitule);
+    free(requete);
+    free(intitule);
 }
 
-void insertBatiment(sqlite3 *db, char *nom, int surface, int jour) {
+void insertBatiment(sqlite3 *db, char *nom, char *site, char *surface) {
     char *requete = NULL;
-    asprintf(&requete, "INSERT INTO BATIMENTS (nom, surface, date_maj) VALUES ('%s', %d, date('1899-12-30', '+%i day'));", nom, surface, jour);
+    asprintf(&requete, "INSERT INTO BATIMENTS (nom, site, surface) VALUES ('%s', '%s', '%s');", nom, site, surface);
     char *intitule=NULL;
-    asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\"", nom);
+    asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", nom);
     requeteModele(db, requete, intitule);
+    free(requete);
+    free(intitule);
 }
 
 void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, double valeur, int jour) {
@@ -74,6 +79,8 @@ void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, double valeur
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'une nouvelle ligne à la table \"%s\"", site);
     requeteModele(db, requete, intitule);
+    free(requete);
+    free(intitule);
 }
 
 void update(sqlite3 *db, char* table, char *champ, char *value) {
@@ -81,7 +88,9 @@ void update(sqlite3 *db, char* table, char *champ, char *value) {
     asprintf(&requete, "UPDATE %s SET %s = '%s';", table, champ, value);
     char *intitule=NULL;
     asprintf(&intitule, "Update de la table \"%s\"", table);
-    requeteModele(db, requete, "Update de la table");
+    requeteModele(db, requete, intitule);
+    free(requete);
+    free(intitule);
 }
 
 void updateWithCondition(sqlite3 *db, char* table, char *champ, char *value, char *condition) {
@@ -90,4 +99,6 @@ void updateWithCondition(sqlite3 *db, char* table, char *champ, char *value, cha
     char *intitule=NULL;
     asprintf(&intitule, "Update de la table \"%s\"", table);
     requeteModele(db, requete, intitule);
+    free(requete);
+    free(intitule);
 }
