@@ -11,7 +11,7 @@ void versionSQLite() {
 
 void openBDD(sqlite3 *db) {
     int codeRetour = 0;
-    remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
+    //remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
 
     // ouverture (ou création si n'existe pas) de la base de données
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
@@ -83,22 +83,68 @@ void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, double valeur
     free(intitule);
 }
 
-void update(sqlite3 *db, char* table, char *champ, char *value) {
+void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_champ, char *condition_value) {
     char *requete = NULL;
-    asprintf(&requete, "UPDATE %s SET %s = '%s';", table, champ, value);
+    asprintf(&requete, "UPDATE %s SET %s = '%s' WHERE lower(%s) = lower('%s');", table, champ, value, condition_champ, condition_value);
     char *intitule=NULL;
-    asprintf(&intitule, "Update de la table \"%s\"", table);
+    asprintf(&intitule, "Update de la table \"%s\" : %s %s = %s", table, champ, condition_value, value);
     requeteModele(db, requete, intitule);
     free(requete);
     free(intitule);
 }
 
-void updateWithCondition(sqlite3 *db, char* table, char *champ, char *value, char *condition) {
-    char *requete = NULL;
-    asprintf(&requete, "UPDATE %s SET %s = '%s' WHERE %s;", table, champ, value, condition);
-    char *intitule=NULL;
-    asprintf(&intitule, "Update de la table \"%s\"", table);
-    requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
+int actualiserBatimentsEtSurfaces(sqlite3 *db) {
+    FILE* fichierCSVSurfaces = fopen("../Relevés/Surfaces.csv", "r");
+
+    if (fichierCSVSurfaces == NULL) { // pas de fichier Surfaces.csv --> rien à faire
+        printf("Pas d'actualisation des batiments et de leurs surfaces\n");
+    }
+
+    // Sinon on commence la lecture
+    else {
+
+        char line[160];
+        char nom_site[50];
+        char nom_batiment[50];
+        char surface[50];
+
+        int codeRetour;
+        int isPresentInTableBatiments = -1;
+
+        fgets(line, 160, fichierCSVSurfaces); // on passe la première qui ne sert à rien (titres de colonnes)
+        fgets(line, 160, fichierCSVSurfaces); // On met la deuxième ligne dans la variable line
+
+        while (!feof(fichierCSVSurfaces))  { // tant que le fichier n'est pas fini
+            sscanf(line, "%[^;];%[^;];%s", &nom_site, &nom_batiment, &surface); // récupération des données de la ligne
+
+            sqlite3_stmt *requete;
+            char* sqlSELECT = "";
+            asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(nom) = lower('%s')", nom_batiment);
+            codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+            free(sqlSELECT);
+
+            if (!codeRetour){
+                //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+                while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+                    codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+                    if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                        isPresentInTableBatiments = sqlite3_column_int(requete, 0); //on récupère la premiére colonne (ici le nombre COUNT(*))
+                    }
+                }
+                sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+            }
+            if (isPresentInTableBatiments == 0) {
+                insertBatiment(db,nom_batiment, nom_site, surface);
+                createTableBatiment(db, nom_batiment);
+            }
+            else if (isPresentInTableBatiments == 1) {
+                update(db, "batiments", "surface", surface, "nom", nom_batiment);
+            }
+            fgets(line, 160, fichierCSVSurfaces); // ligne suivante
+        }
+
+        fclose(fichierCSVSurfaces);
+        return 1;
+    }
+    return 0;
 }
