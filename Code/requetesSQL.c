@@ -25,7 +25,7 @@ void openBDD(sqlite3 *db) {
     }
 }
 
-void requeteModele(sqlite3 *db, char *requete, char *intitule) {
+requeteModele(sqlite3 *db, char *requete, char *intitule) {
     int codeRetour = 0;
     char *feedbackErrorSQL = NULL;
     // Mise en forme du message de console
@@ -147,4 +147,23 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         return 1;
     }
     return 0;
+}
+
+void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide, char * date){
+    int codeRetour;
+    sqlite3_stmt *requete;
+    char* sqlSELECT = "";
+    asprintf(&sqlSELECT,"SELECT %s FROM %s WHERE fluide = '%s' AND date = '%s'", "valeur", nomBatiment, nomFluide, date);
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    free(sqlSELECT);
+    if (!codeRetour){
+        //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("Consommation d'%s du batîment %s le %s : %f\n",nomFluide, nomBatiment, date,sqlite3_column_double(requete, 0));
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
 }
