@@ -75,7 +75,7 @@ void insertBatiment(sqlite3 *db, char *nom, char *site, char *surface) {
 
 void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, double valeur, int jour) {
     char *requete = NULL;
-    asprintf(&requete, "INSERT INTO %s (fluide, valeur, date) VALUES ('%s', %f, date('1899-12-30', '+%i day'));", site, nom_fluide, valeur, jour);
+    asprintf(&requete, "INSERT INTO %s (fluide, valeur, date) SELECT '%s', %f, date('1899-12-30', '+%i day') WHERE NOT EXISTS(SELECT 1 FROM %s WHERE fluide = '%s' AND valeur = %f AND date = date('1899-12-30', '+%i day'));", site, nom_fluide, valeur, jour, site, nom_fluide, valeur, jour);
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'une nouvelle ligne à la table \"%s\"", site);
     requeteModele(db, requete, intitule);
