@@ -11,7 +11,7 @@ void removeEmptyLinesCSV() {
     FILE * fichierCSVfinal = NULL;
 
     fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
-    fichierCSVfinal = fopen("../Générés/conversionCSV.txt", "wb");
+    fichierCSVfinal = fopen("../Générés/SB_CO2.csv", "wb");
 
     char line[100];
     int c = 0;

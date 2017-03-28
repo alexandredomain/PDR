@@ -11,7 +11,7 @@ void versionSQLite() {
 
 void openBDD(sqlite3 *db) {
     int codeRetour = 0;
-    //remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
+    remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
 
     // ouverture (ou création si n'existe pas) de la base de données
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
@@ -73,7 +73,7 @@ void insertBatiment(sqlite3 *db, char *nom, char *site, char *surface) {
     free(intitule);
 }
 
-void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, double valeur, int jour) {
+void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur, char *jour) {
     char *requete = NULL;
     asprintf(&requete, "INSERT INTO %s (fluide, valeur, date) SELECT '%s', %f, date('1899-12-30', '+%i day') WHERE NOT EXISTS(SELECT 1 FROM %s WHERE fluide = '%s' AND valeur = %f AND date = date('1899-12-30', '+%i day'));", site, nom_fluide, valeur, jour, site, nom_fluide, valeur, jour);
     char *intitule=NULL;
@@ -166,4 +166,32 @@ void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide
         }
         sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
     }
+}
+
+int lectureEtInsertionData(char * fichier, sqlite3 *db){
+    FILE *fichierCSV = fopen(fichier, "r");
+
+    if (fichierCSV != NULL) {
+        char line[160];
+        char batiment[50];
+        char fluide[20];
+        char date[20];
+        char valeur[20];
+
+        sscanf(fichier, "../Générés/%[^_]_%[^.].csv", &batiment, &fluide);
+
+        fgets(line, 160, fichierCSV); // on passe la première qui ne sert à rien (total)
+        fgets(line, 160, fichierCSV); // On passe la moyenne
+        fgets(line, 160, fichierCSV);
+
+        while (!feof(fichierCSV))  {
+             sscanf(line, "%[^;];%[^;];", &date, &valeur); // récupération des données de la ligne
+             printf(date);
+             insertDataBatiment(db,batiment,fluide,valeur, date);
+             fgets(line, 160, fichierCSV);
+        }
+        fclose(fichierCSV);
+        return 1;
+    }
+    return 0;
 }

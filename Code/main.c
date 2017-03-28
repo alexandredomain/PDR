@@ -31,11 +31,15 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
 
     printf("************** Insertion des données dans la base de données **************\n");
-    insertDataBatiment(db,"DIA","Elec",156.34,42795);
+    //insertDataBatiment(db,"DIA","Elec",156.34,42795);
     printf("***************************************************************************\n\n");
 
     printf("************** Séléction des données dans la base de données **************\n");
-    chercherDonneesMonoFluide(db, "dia", "Elec", "2017-03-01");
+    //chercherDonneesMonoFluide(db, "dia", "Elec", "2017-03-01");
+    printf("***************************************************************************\n\n");
+
+    printf("************** Lecture et insertion des données d'un fichier **************\n");
+    lectureEtInsertionData("../Générés/SB_CO2.csv", db);
     printf("***************************************************************************\n\n");
 
     sqlite3_close_v2(&db);
