@@ -6,12 +6,20 @@
 #include "xls.h"
 
 
-void removeEmptyLinesCSV() {
+void removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
     FILE * fichierCSV = NULL;
     FILE * fichierCSVfinal = NULL;
 
-    fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "rw");
-    fichierCSVfinal = fopen("../Générés/SB_CO2.csv", "wb");
+    char nomFichier[60];
+    char *newNomFichier = NULL;
+
+    sscanf(cheminFichierCSVTemporaire, "../Relevés/%[^-]-temp.csv", &nomFichier);
+    printf("nomFichier : %s\n", nomFichier);
+    asprintf(&newNomFichier,"../Générés/%s.csv",nomFichier);
+    printf("newNomFichier : %s\n", newNomFichier);
+
+    fichierCSV = fopen(cheminFichierCSVTemporaire, "rw");
+    fichierCSVfinal = fopen(newNomFichier, "wb");
 
     char line[100];
     int c = 0;
@@ -27,8 +35,7 @@ void removeEmptyLinesCSV() {
     printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
 
     fclose(fichierCSV);
-    remove("../Générés/conversionCSV-temp.txt");
-
+    remove(cheminFichierCSVTemporaire);
     fclose(fichierCSVfinal);
 }
 
@@ -44,6 +51,9 @@ void XLStoCSV (char * cheminFichierExcel) {
     FILE * fichierExcel = NULL;
     FILE * fichierCSV = NULL;
 
+    char nomFichier[40];
+    sscanf(cheminFichierExcel, "../Relevés/%[^.].xls", &nomFichier);
+
     // Ouverture du fichier Excel
         //const char cheminFichierExcel[50] = "/home/.....xls";
     fichierExcel = fopen(cheminFichierExcel, "r");
@@ -57,7 +67,10 @@ void XLStoCSV (char * cheminFichierExcel) {
     else {
         fclose(fichierExcel); // on ferme le fichier original - si on est là, c'est qu'il existe.
 
-        fichierCSV = fopen("../Générés/conversionCSV-temp.txt", "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
+        char *newNomFichier = NULL;
+        asprintf(&newNomFichier,"../Générés/%s-temp.csv",nomFichier);
+        printf(newNomFichier);
+        fichierCSV = fopen(newNomFichier, "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
 
         pWB = xls_open(cheminFichierExcel, "UTF-8"); // ouverture du fichier XLS à lire
 

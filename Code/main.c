@@ -12,12 +12,13 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
 
     printf("*************** Traitement du fichier *.xls en format texte ***************\n");
-    XLStoCSV("../Relevés/SB_CO2.xls");
-    removeEmptyLinesCSV();
+    printf("test");
+    XLStoCSV("../Relevés/Curie_Eau.xls");
+    removeEmptyLinesCSV("../Générés/Curie_Eau-temp.csv");
     printf("***************************************************************************\n\n");
 
 
-    printf("********************* Ouverture de la base de données *********************\n");
+    /*printf("********************* Ouverture de la base de données *********************\n");
     versionSQLite();
     sqlite3 *db; // initialisation de la base de données
     openBDD(&db);
@@ -42,7 +43,7 @@ int main(int pintArgc, char * ptstrArgv[]) {
     lectureEtInsertionData("../Générés/SB_CO2.csv", db);
     printf("***************************************************************************\n\n");
 
-    sqlite3_close_v2(&db);
+    sqlite3_close_v2(&db);*/
 
     return 0;
 }
