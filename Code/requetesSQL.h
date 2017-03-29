@@ -10,3 +10,4 @@ void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_
 int actualiserBatimentsEtSurfaces(sqlite3 *db);
 void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide, char * date);
 int lectureEtInsertionData(char * fichier, sqlite3 *db);
+void traitementCompletXLS(sqlite3 *db, char *cheminFichierXls);

@@ -25,7 +25,7 @@ void openBDD(sqlite3 *db) {
     }
 }
 
-requeteModele(sqlite3 *db, char *requete, char *intitule) {
+void requeteModele(sqlite3 *db, char *requete, char *intitule) {
     int codeRetour = 0;
     char *feedbackErrorSQL = NULL;
     // Mise en forme du message de console
@@ -193,4 +193,10 @@ int lectureEtInsertionData(char * fichier, sqlite3 *db){
         return 1;
     }
     return 0;
+}
+
+void traitementCompletXLS(sqlite3 *db, char *cheminFichierXls){
+    char* fichier = XLStoCSV(cheminFichierXls);
+    fichier = removeEmptyLinesCSV(fichier);
+    lectureEtInsertionData(fichier,db);
 }

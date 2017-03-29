@@ -1,3 +1,3 @@
-void removeEmptyLinesCSV(char *cheminFichierCSVTemporaire);
+char* removeEmptyLinesCSV(char *cheminFichierCSVTemporaire);
 
-void XLStoCSV(char * cheminFichierExcel);
+char* XLStoCSV(char * cheminFichierExcel);

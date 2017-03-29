@@ -12,8 +12,8 @@ int main(int pintArgc, char * ptstrArgv[]) {
 
 
     printf("*************** Traitement du fichier *.xls en format texte ***************\n");
-    XLStoCSV("../Relevés/Curie_Eau.xls");
-    removeEmptyLinesCSV("../Générés/Curie_Eau-temp.csv");
+    //XLStoCSV("../Relevés/Curie_Eau.xls");
+    //removeEmptyLinesCSV("../Générés/Curie_Eau-temp.csv");
     printf("***************************************************************************\n\n");
 
 
@@ -24,23 +24,25 @@ int main(int pintArgc, char * ptstrArgv[]) {
     createTableListeBatiments(db);
     printf("***************************************************************************\n\n");
 
-
     printf("***************** Lecture des éventuels nouveaux batiments ****************\n");
     actualiserBatimentsEtSurfaces(db);
     printf("***************************************************************************\n\n");
 
+    printf("******************** Traitement complet d'un fichier xls ********************\n");
+    traitementCompletXLS(db, "../Relevés/Curie_Eau.xls" );
+    printf("***************************************************************************\n\n");
 
-    printf("************** Insertion des données dans la base de données **************\n");
-    //insertDataBatiment(db,"DIA","Elec",156.34,42795);
+    /*printf("************** Insertion des données dans la base de données **************\n");
+    insertDataBatiment(db,"DIA","Elec",156.34,42795);
     printf("***************************************************************************\n\n");
 
     printf("************** Séléction des données dans la base de données **************\n");
-    //chercherDonneesMonoFluide(db, "dia", "Elec", "2017-03-01");
+    chercherDonneesMonoFluide(db, "dia", "Elec", "2017-03-01");
     printf("***************************************************************************\n\n");
 
     printf("************** Lecture et insertion des données d'un fichier **************\n");
     lectureEtInsertionData("../Générés/SB_CO2.csv", db);
-    printf("***************************************************************************\n\n");
+    printf("***************************************************************************\n\n");*/
 
     sqlite3_close_v2(&db);
 

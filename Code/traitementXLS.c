@@ -6,7 +6,7 @@
 #include "xls.h"
 
 
-void removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
+char* removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
     FILE * fichierCSV = NULL;
     FILE * fichierCSVfinal = NULL;
 
@@ -14,9 +14,7 @@ void removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
     char *newNomFichier = NULL;
 
     sscanf(cheminFichierCSVTemporaire, "../Relevés/%[^-]-temp.csv", &nomFichier);
-    printf("nomFichier : %s\n", nomFichier);
     asprintf(&newNomFichier,"../Générés/%s.csv",nomFichier);
-    printf("newNomFichier : %s\n", newNomFichier);
 
     fichierCSV = fopen(cheminFichierCSVTemporaire, "rw");
     fichierCSVfinal = fopen(newNomFichier, "wb");
@@ -35,11 +33,12 @@ void removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
     printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
 
     fclose(fichierCSV);
-    remove(cheminFichierCSVTemporaire);
     fclose(fichierCSVfinal);
+    remove(cheminFichierCSVTemporaire);
+    return newNomFichier;
 }
 
-void XLStoCSV (char * cheminFichierExcel) {
+char* XLStoCSV (char * cheminFichierExcel) {
     int i;
 
     xlsWorkBook * pWB;
@@ -69,7 +68,6 @@ void XLStoCSV (char * cheminFichierExcel) {
 
         char *newNomFichier = NULL;
         asprintf(&newNomFichier,"../Générés/%s-temp.csv",nomFichier);
-        printf(newNomFichier);
         fichierCSV = fopen(newNomFichier, "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
 
         pWB = xls_open(cheminFichierExcel, "UTF-8"); // ouverture du fichier XLS à lire
@@ -118,6 +116,7 @@ void XLStoCSV (char * cheminFichierExcel) {
             fclose(fichierCSV);
             xls_close(pWB);
             printf("Conversion terminée.\n");
+            return newNomFichier;
         }
     }
 }
