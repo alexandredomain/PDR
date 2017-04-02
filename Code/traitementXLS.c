@@ -6,25 +6,25 @@
 #include "xls.h"
 
 
-char* removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
+void removeEmptyLinesCSV(char nomFichier[]) {
+    FILE * fichierCSVtemp = NULL;
     FILE * fichierCSV = NULL;
-    FILE * fichierCSVfinal = NULL;
 
-    char nomFichier[60];
-    char *newNomFichier = NULL;
+    char cheminFichierCSVtemp[50];
+    snprintf(cheminFichierCSVtemp, sizeof(cheminFichierCSVtemp), "%s%s-Temp.txt", "../Générés/", nomFichier);
 
-    sscanf(cheminFichierCSVTemporaire, "../Relevés/%[^-]-temp.csv", &nomFichier);
-    asprintf(&newNomFichier,"../Générés/%s.csv",nomFichier);
+    char cheminFichierCSV[60];
+    snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%s%s.txt", "../Générés/", nomFichier);
 
-    fichierCSV = fopen(cheminFichierCSVTemporaire, "rw");
-    fichierCSVfinal = fopen(newNomFichier, "wb");
+    fichierCSVtemp = fopen(cheminFichierCSVtemp, "rw");
+    fichierCSV = fopen(cheminFichierCSV, "wb");
 
     char line[100];
     int c = 0;
 
-    while(fgets(line, sizeof(line), fichierCSV) != NULL) {      //read each line of the file
+    while(fgets(line, sizeof(line), fichierCSVtemp) != NULL) {      //read each line of the file
         if (line[0] != '\n') {
-            fprintf(fichierCSVfinal, "%s", line);
+            fprintf(fichierCSV, "%s", line);
         }
         else {
             c++;
@@ -32,13 +32,13 @@ char* removeEmptyLinesCSV(char *cheminFichierCSVTemporaire) {
     }
     printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
 
+    fclose(fichierCSVtemp);
+    remove(cheminFichierCSVtemp);
+
     fclose(fichierCSV);
-    fclose(fichierCSVfinal);
-    remove(cheminFichierCSVTemporaire);
-    return newNomFichier;
 }
 
-char* XLStoCSV (char * cheminFichierExcel) {
+void XLStoCSV(char cheminDossier[], char nomFichier[]) {
     int i;
 
     xlsWorkBook * pWB;
@@ -48,29 +48,30 @@ char* XLStoCSV (char * cheminFichierExcel) {
     WORD t, tt;
 
     FILE * fichierExcel = NULL;
-    FILE * fichierCSV = NULL;
+    FILE * fichierCSVtemp = NULL;
 
-    char nomFichier[40];
-    sscanf(cheminFichierExcel, "../Relevés/%[^.].xls", &nomFichier);
+    char cheminFichierXLS[50];
+    snprintf(cheminFichierXLS, sizeof(cheminFichierXLS), "%s%s", cheminDossier, nomFichier);
+
+    char cheminFichierCSVtemp[60];
+    snprintf(cheminFichierCSVtemp, sizeof(cheminFichierCSVtemp), "%s%s-Temp.txt", "../Générés/", nomFichier);
 
     // Ouverture du fichier Excel
-        //const char cheminFichierExcel[50] = "/home/.....xls";
-    fichierExcel = fopen(cheminFichierExcel, "r");
+        //const char cheminFichierXLS[50] = "/home/.....xls";
+    fichierExcel = fopen(cheminFichierXLS, "r");
 
     // Affichage d'un message d'erreur si le chemin est incorrecte
     if (fichierExcel == NULL) {
-        printf("Impossible d'ouvrir le fichier à l'emplacement:\n%s\n", cheminFichierExcel);
+        printf("Impossible d'ouvrir le fichier à l'emplacement:\n%s\n", cheminFichierXLS);
     }
 
     // Sinon on commence la lecture
     else {
         fclose(fichierExcel); // on ferme le fichier original - si on est là, c'est qu'il existe.
 
-        char *newNomFichier = NULL;
-        asprintf(&newNomFichier,"../Générés/%s-temp.csv",nomFichier);
-        fichierCSV = fopen(newNomFichier, "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
+        fichierCSVtemp = fopen(cheminFichierCSVtemp, "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
 
-        pWB = xls_open(cheminFichierExcel, "UTF-8"); // ouverture du fichier XLS à lire
+        pWB = xls_open(cheminFichierXLS, "UTF-8"); // ouverture du fichier XLS à lire
 
         // process workbook if found
         if (pWB != NULL) {
@@ -90,7 +91,7 @@ char* XLStoCSV (char * cheminFichierExcel) {
                     // process cells
                     if (lineWritten) {
                         //printf("\n");
-                        fprintf(fichierCSV, "\n");
+                        fprintf(fichierCSVtemp, "\n");
                     }
                     else {
                         lineWritten = 1;
@@ -101,22 +102,21 @@ char* XLStoCSV (char * cheminFichierExcel) {
                             // display the colspan as only one cell, but reject rowspans (they can't be converted to CSV)
                             if (row -> cells.cell[tt].rowspan > 1) {
                                 //printf("%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
-                                fprintf(fichierCSV, "%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
+                                fprintf(fichierCSVtemp, "%d,%d: rowspan=%i", tt, t, row -> cells.cell[tt].rowspan);
                             }
 
                             // display the value of the cell (either numeric or string)
                             if (row -> cells.cell[tt].id == 0x27e || row -> cells.cell[tt].id == 0x0BD || row -> cells.cell[tt].id == 0x203) {
                                 //printf("%.15g;", row -> cells.cell[tt].d);
-                                fprintf(fichierCSV, "%.15g;", row -> cells.cell[tt].d);
+                                fprintf(fichierCSVtemp, "%.15g;", row -> cells.cell[tt].d);
                             }
                         }
                     }
                 }
             }
-            fclose(fichierCSV);
+            fclose(fichierCSVtemp);
             xls_close(pWB);
             printf("Conversion terminée.\n");
-            return newNomFichier;
         }
     }
 }

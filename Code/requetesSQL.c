@@ -11,7 +11,7 @@ void versionSQLite() {
 
 void openBDD(sqlite3 *db) {
     int codeRetour = 0;
-    remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
+    //remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
 
     // ouverture (ou création si n'existe pas) de la base de données
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
@@ -25,7 +25,7 @@ void openBDD(sqlite3 *db) {
     }
 }
 
-void requeteModele(sqlite3 *db, char *requete, char *intitule) {
+requeteModele(sqlite3 *db, char *requete, char *intitule) {
     int codeRetour = 0;
     char *feedbackErrorSQL = NULL;
     // Mise en forme du message de console
@@ -75,7 +75,7 @@ void insertBatiment(sqlite3 *db, char *nom, char *site, char *surface) {
 
 void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur, char *jour) {
     char *requete = NULL;
-    asprintf(&requete, "INSERT INTO %s (fluide, valeur, date) SELECT '%s', '%s', date('1899-12-30', '+%s day') WHERE NOT EXISTS(SELECT 1 FROM %s WHERE fluide = '%s' AND valeur = %f AND date = date('1899-12-30', '+%i day'));", site, nom_fluide, valeur, jour, site, nom_fluide, valeur, jour);
+    asprintf(&requete, "INSERT INTO %s (fluide, valeur, date) SELECT '%s', '%s', date('1899-12-30', '+%s day') WHERE NOT EXISTS(SELECT 1 FROM %s WHERE fluide = '%s' AND valeur = '%s' AND date = date('1899-12-30', '+%s day'));", site, nom_fluide, valeur, jour, site, nom_fluide, valeur, jour);
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'une nouvelle ligne à la table \"%s\"", site);
     requeteModele(db, requete, intitule);
@@ -149,7 +149,50 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
     return 0;
 }
 
-void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide, char * date){
+int lectureEtInsertionData(sqlite3 *db, char fichier[]){
+    FILE *fichierCSV = fopen(fichier, "r");
+
+    if (fichierCSV != NULL) {
+
+        char line[160];
+        char batiment[80] = "";
+        char fluide[40] = "";
+        char date[50];
+        char valeur[50];
+        char partie1[40] = "";
+        char partie2[40] = "";
+        char partie3[40] = "";
+
+        sscanf(fichier, "../Générés/%[^_]_%[^_.]_%[^._].xls.txt", &partie1, &partie2, &partie3);
+
+        if (partie3[0]=='\0') { // type BAT_FLUIDE.xls.txt
+            snprintf(batiment, sizeof(batiment), "%s", partie1);
+            snprintf(fluide, sizeof(fluide), "%s", partie2);
+        }
+        else { // TYPE BAT1_BAT2_FLUIDE.xls.txt
+            snprintf(batiment, sizeof(batiment), "%s_%s", partie1, partie2);
+            snprintf(fluide, sizeof(fluide), "%s", partie3);
+        }
+
+
+        fgets(line, 160, fichierCSV); // on passe la première qui ne sert à rien (total)
+        fgets(line, 160, fichierCSV); // On passe la moyenne
+        fgets(line, 160, fichierCSV);
+
+        while (!feof(fichierCSV))  {
+             sscanf(line, "%[^;];%[^;];", &date, &valeur); // récupération des données de la ligne
+             insertDataBatiment(db, batiment, fluide, valeur, date);
+             fgets(line, 160, fichierCSV);
+        }
+        fclose(fichierCSV); // on ferme le fichier CSV
+        remove(fichier); // on supprimer le CSV car ne sert plus à rien
+        return 1;
+    }
+    return 0;
+}
+
+
+void chercherDonneesMonoFluide(sqlite3 *db, char *nomBatiment, char *nomFluide, char *date){
     int codeRetour;
     sqlite3_stmt *requete;
     char* sqlSELECT = "";
@@ -168,35 +211,61 @@ void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide
     }
 }
 
-int lectureEtInsertionData(char * fichier, sqlite3 *db){
-    FILE *fichierCSV = fopen(fichier, "r");
+void demanderUtilisateurMonoFluide(sqlite3 *db) {
+    char *batiment[] = {
+        "DEI",
+        "SL",
+        "Newton",
+        "Dirac",
+        "GL",
+        "ESM",
+        "Laplace",
+        "BC",
+        "SB",
+        "DIA",
+        "GCE1",
+        "GCE2",
+        "TPC_IM",
+        "TPC_P",
+        "Fenzy",
+        "Curie"
+    };
+    printf("Quel batiment ?\n");
+    printf(" 1 : DEI\n");
+    printf(" 2 : SL\n");
+    printf(" 3 : Newton\n");
+    printf(" 4 : Dirac\n");
+    printf(" 5 : GL\n");
+    printf(" 6 : ESM\n");
+    printf(" 7 : Laplace\n");
+    printf(" 8 : BC\n");
+    printf(" 9 : SB\n");
+    printf("10 : DIA\n");
+    printf("11 : GCE1\n");
+    printf("12 : GCE2\n");
+    printf("13 : TPC_IM\n");
+    printf("14 : TPC_P\n");
+    printf("15 : Fenzy\n");
+    printf("16 : Curie\n");
 
-    if (fichierCSV != NULL) {
-        char line[160];
-        char batiment[50];
-        char fluide[20];
-        char date[20];
-        char valeur[20];
+    printf("\n");
 
-        sscanf(fichier, "../Générés/%[^_]_%[^.].csv", &batiment, &fluide);
+    char *fluide[] = {
+        "Elec",
+        "Eau",
+        "CO2"
+        "Fioul",
+    };
+    printf("Quel fluide ?\n");
+    printf("1 : Elec\n");
+    printf("2 : Fioul\n");
+    printf("3 : Eau\n");
+    printf("4 : CO2\n");
 
-        fgets(line, 160, fichierCSV); // on passe la première qui ne sert à rien (total)
-        fgets(line, 160, fichierCSV); // On passe la moyenne
-        fgets(line, 160, fichierCSV);
+    printf("\n");
 
-        while (!feof(fichierCSV))  {
-             sscanf(line, "%[^;];%[^;];", &date, &valeur); // récupération des données de la ligne
-             insertDataBatiment(db,batiment,fluide,valeur, date);
-             fgets(line, 160, fichierCSV);
-        }
-        fclose(fichierCSV);
-        return 1;
-    }
-    return 0;
-}
+    printf("A quelle date ? (sous la forme \"AAAA-MM-JJ\") ?\n");
 
-void traitementCompletXLS(sqlite3 *db, char *cheminFichierXls){
-    char* fichier = XLStoCSV(cheminFichierXls);
-    fichier = removeEmptyLinesCSV(fichier);
-    lectureEtInsertionData(fichier,db);
+    printf("\n");
+
 }
