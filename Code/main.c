@@ -70,9 +70,10 @@ int main(int pintArgc, char * ptstrArgv[]) {
       perror ("");
       return EXIT_FAILURE;
     }
+    selectData(db);
+    sqlite3_close_v2(&db);
 
-   sqlite3_close_v2(&db);
+    //demanderUtilisateurMonoFluide(db);
 
-    demanderUtilisateurMonoFluide(db);
     return 0;
 }

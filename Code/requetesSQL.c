@@ -207,7 +207,7 @@ void chercherDonneesMonoFluide(sqlite3 *db, char *nomBatiment, char *nomFluide, 
                 printf("Consommation d'%s du batîment %s le %s : %f\n",nomFluide, nomBatiment, date,sqlite3_column_double(requete, 0));
             }
         }
-        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_double" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
     }
 }
 
@@ -268,4 +268,76 @@ void demanderUtilisateurMonoFluide(sqlite3 *db) {
 
     printf("\n");
 
+}
+
+void selectData(sqlite3 *db){
+    int codeRetour;
+    int i=0;
+    sqlite3_stmt *requete;
+    char* sqlSELECT = "";
+
+    //******************************************************************//
+    printf("******************** SELECTION BATIMENT ********************\n\n");
+    //******************************************************************//
+
+    asprintf(&sqlSELECT,"SELECT nom FROM batiments");
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("%s\n",sqlite3_column_text(requete, 0));
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+    char batiment[30]= "";
+    printf("Sélectionnez un bâtiment dans la liste ci-dessus\n");
+    fgets(batiment, sizeof(batiment), stdin);
+    batiment[strlen(batiment)-1]='\0';
+
+    //******************************************************************//
+    printf("******************** SELECTION FLUIDE ********************\n\n");
+    //******************************************************************//
+
+    asprintf(&sqlSELECT,"SELECT fluide FROM %s GROUP BY fluide", batiment);
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("%s\n",sqlite3_column_text(requete, 0));
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+    char fluide[15]= "";
+    printf("Sélectionnez un fluide dans la liste ci-dessus\n");
+    fgets(fluide, sizeof(fluide), stdin);
+    fluide[strlen(fluide)-1]='\0';
+
+    //******************************************************************//
+    printf("******************** SELECTION DATE ********************\n\n");
+    //******************************************************************//
+
+    char date[15]= "";
+    printf("Sélectionnez la date voulue (au format \"AAAA-MM-JJ\")\n");
+    fgets(date, sizeof(date), stdin);
+    date[strlen(date)-1]='\0';
+
+    asprintf(&sqlSELECT,"SELECT %s FROM %s WHERE fluide = '%s' AND date = '%s'", "valeur", batiment,fluide, date);
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    free(sqlSELECT);
+    if (!codeRetour){
+        //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("Consommation d'%s du batîment %s le %s : %f\n",fluide, batiment, date,sqlite3_column_double(requete, 0));
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_double" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
 }
