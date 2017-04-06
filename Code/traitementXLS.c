@@ -10,10 +10,10 @@ void removeEmptyLinesCSV(char nomFichier[]) {
     FILE * fichierCSVtemp = NULL;
     FILE * fichierCSV = NULL;
 
-    char cheminFichierCSVtemp[50];
+    char cheminFichierCSVtemp[90];
     snprintf(cheminFichierCSVtemp, sizeof(cheminFichierCSVtemp), "%s%s-Temp.txt", "../Générés/", nomFichier);
 
-    char cheminFichierCSV[60];
+    char cheminFichierCSV[80];
     snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%s%s.txt", "../Générés/", nomFichier);
 
     fichierCSVtemp = fopen(cheminFichierCSVtemp, "rw");
@@ -34,7 +34,6 @@ void removeEmptyLinesCSV(char nomFichier[]) {
 
     fclose(fichierCSVtemp);
     remove(cheminFichierCSVtemp);
-
     fclose(fichierCSV);
 }
 
@@ -50,10 +49,10 @@ void XLStoCSV(char cheminDossier[], char nomFichier[]) {
     FILE * fichierExcel = NULL;
     FILE * fichierCSVtemp = NULL;
 
-    char cheminFichierXLS[50];
+    char cheminFichierXLS[70];
     snprintf(cheminFichierXLS, sizeof(cheminFichierXLS), "%s%s", cheminDossier, nomFichier);
 
-    char cheminFichierCSVtemp[60];
+    char cheminFichierCSVtemp[80];
     snprintf(cheminFichierCSVtemp, sizeof(cheminFichierCSVtemp), "%s%s-Temp.txt", "../Générés/", nomFichier);
 
     // Ouverture du fichier Excel

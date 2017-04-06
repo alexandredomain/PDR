@@ -11,7 +11,7 @@ void versionSQLite() {
 
 void openBDD(sqlite3 *db) {
     int codeRetour = 0;
-    //remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
+    remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
 
     // ouverture (ou création si n'existe pas) de la base de données
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
@@ -50,7 +50,7 @@ requeteModele(sqlite3 *db, char *requete, char *intitule) {
 }
 
 void createTableListeBatiments(sqlite3 *db) {
-    requeteModele(db, "CREATE TABLE IF NOT EXISTS BATIMENTS (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, site TEXT, surface INTEGER);", "Création de la table \"BATIMENTS\"");
+    requeteModele(db, "CREATE TABLE IF NOT EXISTS BATIMENTS (id TEXT PRIMARY KEY, site TEXT, surface INTEGER, nom TEXT);", "Création de la table \"BATIMENTS\"");
 }
 
 void createTableBatiment(sqlite3 *db, char *nom) {
@@ -63,11 +63,11 @@ void createTableBatiment(sqlite3 *db, char *nom) {
     free(intitule);
 }
 
-void insertBatiment(sqlite3 *db, char *nom, char *site, char *surface) {
+void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom) {
     char *requete = NULL;
-    asprintf(&requete, "INSERT INTO BATIMENTS (nom, site, surface) VALUES ('%s', '%s', '%s');", nom, site, surface);
+    asprintf(&requete, "INSERT INTO BATIMENTS (id, site, surface, nom) VALUES ('%s', '%s', '%s', '%s');", id, site, surface, nom);
     char *intitule=NULL;
-    asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", nom);
+    asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", id);
     requeteModele(db, requete, intitule);
     free(requete);
     free(intitule);
@@ -105,7 +105,8 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
 
         char line[160];
         char nom_site[50];
-        char nom_batiment[50];
+        char id_batiment[50];
+        char nom_batiment[70];
         char surface[50];
 
         int codeRetour;
@@ -115,11 +116,11 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         fgets(line, 160, fichierCSVSurfaces); // On met la deuxième ligne dans la variable line
 
         while (!feof(fichierCSVSurfaces))  { // tant que le fichier n'est pas fini
-            sscanf(line, "%[^;];%[^;];%s", &nom_site, &nom_batiment, &surface); // récupération des données de la ligne
+            sscanf(line, "%[^;];%[^;];%[^;];%[^\n]", &nom_site, &id_batiment, &surface, &nom_batiment); // récupération des données de la ligne
 
             sqlite3_stmt *requete;
             char* sqlSELECT = "";
-            asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(nom) = lower('%s')", nom_batiment);
+            asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(nom) = lower('%s')", id_batiment);
             codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
             free(sqlSELECT);
 
@@ -134,11 +135,11 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
                 sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
             }
             if (isPresentInTableBatiments == 0) {
-                insertBatiment(db,nom_batiment, nom_site, surface);
-                createTableBatiment(db, nom_batiment);
+                insertBatiment(db, id_batiment, nom_site, surface, nom_batiment);
+                createTableBatiment(db, id_batiment);
             }
             else if (isPresentInTableBatiments == 1) {
-                update(db, "batiments", "surface", surface, "nom", nom_batiment);
+                update(db, "batiments", "surface", surface, "id", id_batiment);
             }
             fgets(line, 160, fichierCSVSurfaces); // ligne suivante
         }
@@ -155,25 +156,36 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
     if (fichierCSV != NULL) {
 
         char line[160];
-        char batiment[80] = "";
-        char fluide[40] = "";
-        char date[50];
-        char valeur[50];
-        char partie1[40] = "";
-        char partie2[40] = "";
-        char partie3[40] = "";
+        char batiment[160]= "";
+        char fluide[40]   = "";
+        char date[50]     = "";
+        char valeur[50]   = "";
+        char partie1[40]  = "";
+        char partie2[40]  = "";
+        char partie3[40]  = "";
+        char partie4[40]  = "";
+        char partie5[40]  = "";
 
-        sscanf(fichier, "../Générés/%[^_]_%[^_.]_%[^._].xls.txt", &partie1, &partie2, &partie3);
 
-        if (partie3[0]=='\0') { // type BAT_FLUIDE.xls.txt
+
+        sscanf(fichier, "../Générés/%[^_]_%[^_.]_%[^_.]_%[^_.]_%[^_.].xls.txt", &partie1, &partie2, &partie3, &partie4, &partie5);
+
+        if (partie3[0]=='\0' || isdigit(partie3[0])) { // type BAT_FLUIDE(_20000101).xls
             snprintf(batiment, sizeof(batiment), "%s", partie1);
             snprintf(fluide, sizeof(fluide), "%s", partie2);
         }
-        else { // TYPE BAT1_BAT2_FLUIDE.xls.txt
+        else if (partie4[0]=='\0' || isdigit(partie4[0])) { // type BAT1_BAT2_FLUIDE(_20000101).xls
             snprintf(batiment, sizeof(batiment), "%s_%s", partie1, partie2);
             snprintf(fluide, sizeof(fluide), "%s", partie3);
         }
-
+        else if (partie5[0]=='\0' || isdigit(partie5[0])) {
+            snprintf(batiment, sizeof(batiment), "%s_%s_%s", partie1, partie2, partie3);
+            snprintf(fluide, sizeof(fluide), "%s", partie4);
+        }
+        else {
+            snprintf(batiment, sizeof(batiment), "%s_%s_%s_%s", partie1, partie2, partie3, partie4);
+            snprintf(fluide, sizeof(fluide), "%s", partie5);
+        }
 
         fgets(line, 160, fichierCSV); // on passe la première qui ne sert à rien (total)
         fgets(line, 160, fichierCSV); // On passe la moyenne
@@ -183,6 +195,9 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
              sscanf(line, "%[^;];%[^;];", &date, &valeur); // récupération des données de la ligne
              insertDataBatiment(db, batiment, fluide, valeur, date);
              fgets(line, 160, fichierCSV);
+        }
+        if (feof(fichierCSV)) {
+            printf("Fin des entrées dans la BDD\n");
         }
         fclose(fichierCSV); // on ferme le fichier CSV
         remove(fichier); // on supprimer le CSV car ne sert plus à rien
@@ -207,68 +222,11 @@ void chercherDonneesMonoFluide(sqlite3 *db, char *nomBatiment, char *nomFluide, 
                 printf("Consommation d'%s du batîment %s le %s : %f\n",nomFluide, nomBatiment, date,sqlite3_column_double(requete, 0));
             }
         }
-        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_double" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
     }
 }
 
-void demanderUtilisateurMonoFluide(sqlite3 *db) {
-    char *batiment[] = {
-        "DEI",
-        "SL",
-        "Newton",
-        "Dirac",
-        "GL",
-        "ESM",
-        "Laplace",
-        "BC",
-        "SB",
-        "DIA",
-        "GCE1",
-        "GCE2",
-        "TPC_IM",
-        "TPC_P",
-        "Fenzy",
-        "Curie"
-    };
-    printf("Quel batiment ?\n");
-    printf(" 1 : DEI\n");
-    printf(" 2 : SL\n");
-    printf(" 3 : Newton\n");
-    printf(" 4 : Dirac\n");
-    printf(" 5 : GL\n");
-    printf(" 6 : ESM\n");
-    printf(" 7 : Laplace\n");
-    printf(" 8 : BC\n");
-    printf(" 9 : SB\n");
-    printf("10 : DIA\n");
-    printf("11 : GCE1\n");
-    printf("12 : GCE2\n");
-    printf("13 : TPC_IM\n");
-    printf("14 : TPC_P\n");
-    printf("15 : Fenzy\n");
-    printf("16 : Curie\n");
 
-    printf("\n");
-
-    char *fluide[] = {
-        "Elec",
-        "Eau",
-        "CO2"
-        "Fioul",
-    };
-    printf("Quel fluide ?\n");
-    printf("1 : Elec\n");
-    printf("2 : Fioul\n");
-    printf("3 : Eau\n");
-    printf("4 : CO2\n");
-
-    printf("\n");
-
-    printf("A quelle date ? (sous la forme \"AAAA-MM-JJ\") ?\n");
-
-    printf("\n");
-
-}
 
 void selectData(sqlite3 *db){
     int codeRetour;
@@ -327,7 +285,7 @@ void selectData(sqlite3 *db){
     fgets(date, sizeof(date), stdin);
     date[strlen(date)-1]='\0';
 
-    asprintf(&sqlSELECT,"SELECT %s FROM %s WHERE fluide = '%s' AND date = '%s'", "valeur", batiment,fluide, date);
+    asprintf(&sqlSELECT,"SELECT %s FROM %s WHERE fluide = '%s' AND date = '%s'", "valeur", batiment, fluide, date);
     codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
     free(sqlSELECT);
     if (!codeRetour){
@@ -338,6 +296,6 @@ void selectData(sqlite3 *db){
                 printf("Consommation d'%s du batîment %s le %s : %f\n",fluide, batiment, date,sqlite3_column_double(requete, 0));
             }
         }
-        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_double" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
     }
 }

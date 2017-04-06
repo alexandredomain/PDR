@@ -18,6 +18,7 @@ int main(int pintArgc, char * ptstrArgv[]) {
     createTableListeBatiments(db);
     printf("***************************************************************************\n\n");
 
+
     printf("***************** Lecture des éventuels nouveaux batiments ****************\n");
     actualiserBatimentsEtSurfaces(db);
     printf("***************************************************************************\n\n");
@@ -35,45 +36,43 @@ int main(int pintArgc, char * ptstrArgv[]) {
           if (ent->d_type == DT_REG) {
               snprintf(nomFichier, sizeof(nomFichier), "%s", ent->d_name);
               snprintf(cheminFichier, sizeof(cheminFichier), "%s%s", cheminDossier, nomFichier);
-              if (nomFichier[strlen(nomFichier)-5] != '_' && nomFichier[strlen(nomFichier)-5] != '2' && nomFichier[strlen(nomFichier)-5] != '1' && nomFichier[strlen(nomFichier)-5] != '7' && nomFichier[0] != '_' && nomFichier[3] != 'f' && nomFichier[4] != 'B') {
-
-                  char batiment[80] = "";
-                  char fluide[40]   = "";
-                  char partie1[40]  = "";
-                  char partie2[40]  = "";
-                  char partie3[40]  = "";
-
-                  sscanf(cheminFichier, "../Relevés/%[^_]_%[^_.]_%[^._].xls", &partie1, &partie2, &partie3);
-
-                  if (partie3[0]=='\0') { // type BAT_FLUIDE.xls
-                      snprintf(batiment, sizeof(batiment), "%s", partie1);
-                      snprintf(fluide, sizeof(fluide), "%s", partie2);
-                  }
-                  else { // TYPE BAT1_BAT2_FLUIDE.xls
-                      snprintf(batiment, sizeof(batiment), "%s_%s", partie1, partie2);
-                      snprintf(fluide, sizeof(fluide), "%s", partie3);
-                  }
+              //if (strstr(nomFichier, "_20[1-9]") == NULL) {
+              if (
+                nomFichier[strlen(nomFichier)-5] != '_' // cas des fichiers mensuels "batiment_fluide_.xls"
+                &&
+                nomFichier[0] != '_' // cas du fichier _ProdNRJ
+                &&
+                (nomFichier[0] != 'S' && nomFichier[1] != 'L' && nomFichier[2] != '_') // cas du fichier "site" SL_
+                &&
+                (nomFichier[0] != 'S' && nomFichier[1] != 'B' && nomFichier[2] != '_') // cas du fichier "site" SB_
+                &&
+                (nomFichier[strlen(nomFichier)-11] == '_' && isdigit(nomFichier[strlen(nomFichier)-10]) && nomFichier[strlen(nomFichier)-10] == '2') // cas des fichiers journaliers des mois précédents "batiment_fluide_201704.xls"
+                &&
+                !(nomFichier[strlen(nomFichier)-9] == '_' && isdigit(nomFichier[strlen(nomFichier)-8]) && nomFichier[strlen(nomFichier)-8] == '2') // cas des fichiers mensuels des mois précédents "batiment_fluide_2017.xls"
+                ) {
 
                   snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%s%s%s", "../Générés/", nomFichier, ".txt");
+
+                  printf("--------------------------------------- ------------------------------------\n");
+                  printf("%s\n", cheminFichier);
 
                   XLStoCSV(cheminDossier, nomFichier);
                   removeEmptyLinesCSV(nomFichier);
                   lectureEtInsertionData(db, cheminFichierCSV);
 
-          }
-              //printf("%d\n", strlen(cheminFichier)); // pour vérifier la longueur des fichiers
+            }
           }
       }
       closedir (dir);
     }
-    else { /* could not open directory */
+    else { // could not open directory
       perror ("");
       return EXIT_FAILURE;
     }
-    selectData(db);
-    sqlite3_close_v2(&db);
 
-    //demanderUtilisateurMonoFluide(db);
+    selectData(db); // demande monofluide
+
+    sqlite3_close_v2(&db);
 
     return 0;
 }

@@ -11,6 +11,4 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db);
 int lectureEtInsertionData(sqlite3 *db, char fichier[]);
 
 void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide, char * date);
-void demanderUtilisateurMonoFluide(sqlite3 *db);
 void selectData(sqlite3 *db);
-
