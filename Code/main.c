@@ -38,7 +38,7 @@ int main(int pintArgc, char * ptstrArgv[]) {
               snprintf(cheminFichier, sizeof(cheminFichier), "%s%s", cheminDossier, nomFichier);
               //if (strstr(nomFichier, "_20[1-9]") == NULL) {
               if (
-                nomFichier[strlen(nomFichier)-5] != '_' // cas des fichiers mensuels "batiment_fluide_.xls"
+                (strlen(nomFichier) > 9 && nomFichier[strlen(nomFichier)-5]) != '_' // cas des fichiers mensuels "batiment_fluide_.xls"
                 &&
                 nomFichier[0] != '_' // cas du fichier _ProdNRJ
                 &&
@@ -70,7 +70,7 @@ int main(int pintArgc, char * ptstrArgv[]) {
       return EXIT_FAILURE;
     }
 
-    selectData(db); // demande monofluide
+    double donnee = selectData(db); // demande monofluide
 
     sqlite3_close_v2(&db);
 
