@@ -12,3 +12,6 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]);
 
 void chercherDonneesMonoFluide(sqlite3 *db, char * nomBatiment, char * nomFluide, char * date);
 double selectData(sqlite3 *db);
+double getSurface(sqlite3 *db, char *id_batiment);
+double DPE(sqlite3 *db);
+void writeDataToCSV(sqlite3 *db);

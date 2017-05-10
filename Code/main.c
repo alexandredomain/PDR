@@ -23,7 +23,6 @@ int main(int pintArgc, char * ptstrArgv[]) {
     actualiserBatimentsEtSurfaces(db);
     printf("***************************************************************************\n\n");
 
-
     DIR *dir;
     struct dirent *ent;
     char cheminDossier[14] = "../Relevés/";
@@ -38,19 +37,14 @@ int main(int pintArgc, char * ptstrArgv[]) {
               snprintf(cheminFichier, sizeof(cheminFichier), "%s%s", cheminDossier, nomFichier);
               //if (strstr(nomFichier, "_20[1-9]") == NULL) {
               if (
-                (strlen(nomFichier) > 9 && nomFichier[strlen(nomFichier)-5]) != '_' // cas des fichiers mensuels "batiment_fluide_.xls"
+                nomFichier[strlen(nomFichier)-5] != '_' // cas des fichiers mensuels "batiment_fluide(_MMAAAA)_.xls"
                 &&
                 nomFichier[0] != '_' // cas du fichier _ProdNRJ
                 &&
-                (nomFichier[0] != 'S' && nomFichier[1] != 'L' && nomFichier[2] != '_') // cas du fichier "site" SL_
-                &&
-                (nomFichier[0] != 'S' && nomFichier[1] != 'B' && nomFichier[2] != '_') // cas du fichier "site" SB_
-                &&
-                (nomFichier[strlen(nomFichier)-11] == '_' && isdigit(nomFichier[strlen(nomFichier)-10]) && nomFichier[strlen(nomFichier)-10] == '2') // cas des fichiers journaliers des mois précédents "batiment_fluide_201704.xls"
+                nomFichier[0] != 'S' // cas des fichiers "site" SB_ ou SL_ inutiles pour nous (batiments par batiments)
                 &&
                 !(nomFichier[strlen(nomFichier)-9] == '_' && isdigit(nomFichier[strlen(nomFichier)-8]) && nomFichier[strlen(nomFichier)-8] == '2') // cas des fichiers mensuels des mois précédents "batiment_fluide_2017.xls"
                 ) {
-
                   snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%s%s%s", "../Générés/", nomFichier, ".txt");
 
                   printf("--------------------------------------- ------------------------------------\n");
@@ -59,8 +53,8 @@ int main(int pintArgc, char * ptstrArgv[]) {
                   XLStoCSV(cheminDossier, nomFichier);
                   removeEmptyLinesCSV(nomFichier);
                   lectureEtInsertionData(db, cheminFichierCSV);
-
-            }
+              }
+              //remove(cheminFichier);
           }
       }
       closedir (dir);
@@ -70,7 +64,34 @@ int main(int pintArgc, char * ptstrArgv[]) {
       return EXIT_FAILURE;
     }
 
-    double donnee = selectData(db); // demande monofluide
+
+    // Partie interaction avec l'utilisateur : choix de faire un DPE ou un export
+
+    printf("\n\n\n\n");
+    printf("----------------------------------------------------------------------------");
+    printf("\n\n\n\n");
+
+    int userChoice = 0;
+
+    while (userChoice != 1 && userChoice != 2 && userChoice != 3) {
+        printf("Sélectionnez l'action que vous voulez effectuer :\n"
+                "1 : Calculer un DPE\n"
+                "2 : Effectuer un export de données\n"
+                "3 : Arrêter le programme\n");
+        scanf("%d", &userChoice);
+    }
+
+    switch (userChoice) {
+    case 1:
+        DPE(db);
+        break;
+    case 2:
+        writeDataToCSV(db);
+        break;
+    default:
+        return 0;
+        break;
+    }
 
     sqlite3_close_v2(&db);
 

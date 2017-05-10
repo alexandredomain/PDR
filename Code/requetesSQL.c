@@ -94,7 +94,7 @@ void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_
 }
 
 int actualiserBatimentsEtSurfaces(sqlite3 *db) {
-    FILE* fichierCSVSurfaces = fopen("../Relevés/Surfaces.csv", "r");
+    FILE* fichierCSVSurfaces = fopen("../Surfaces.csv", "r");
 
     if (fichierCSVSurfaces == NULL) { // pas de fichier Surfaces.csv --> rien à faire
         printf("Pas d'actualisation des batiments et de leurs surfaces\n");
@@ -116,13 +116,12 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         fgets(line, 160, fichierCSVSurfaces); // On met la deuxième ligne dans la variable line
 
         while (!feof(fichierCSVSurfaces))  { // tant que le fichier n'est pas fini
-            sscanf(line, "%[^;];%[^;];%[^;];%[^\n]", &nom_site, &id_batiment, &surface, &nom_batiment); // récupération des données de la ligne
+            sscanf(line, "%[^;];%[^;];%[^;];%[A-Za-zéèêàù&0-9_- ]", &nom_site, &id_batiment, &surface, &nom_batiment); // récupération des données de la ligne
 
             sqlite3_stmt *requete;
             char* sqlSELECT = "";
-            asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(nom) = lower('%s')", id_batiment);
+            asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(id) = lower('%s')", id_batiment);
             codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
-            free(sqlSELECT);
 
             if (!codeRetour){
                 //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
@@ -145,6 +144,7 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         }
 
         fclose(fichierCSVSurfaces);
+        // remove("../Surfaces.csv"); // à décommenter
         return 1;
     }
     return 0;
@@ -200,7 +200,7 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
             printf("Fin des entrées dans la BDD\n");
         }
         fclose(fichierCSV); // on ferme le fichier CSV
-        //remove(fichier); // on supprimer le CSV car ne sert plus à rien
+        remove(fichier); // on supprimer le CSV car ne sert plus à rien
         return 1;
     }
     return 0;
@@ -330,3 +330,315 @@ double selectData(sqlite3 *db){
 
     return valeur;
 }
+
+double getSurface(sqlite3 *db, char *id_batiment) {
+    sqlite3_stmt *requete;
+    char* sqlSELECT = "";
+    int codeRetour;
+
+    double surface;
+
+    asprintf(&sqlSELECT,"SELECT surface FROM batiments WHERE lower(id)=lower('%s')", id_batiment);
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                surface = sqlite3_column_double(requete, 0);
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+    else {
+        return -1;
+    }
+
+    return surface;
+}
+
+
+
+double DPE(sqlite3 *db){
+
+    sqlite3_stmt *requete;
+    char* sqlSELECT;
+    int codeRetour;
+
+    //******************************************************************//
+    printf("\n******************** SELECTION BATIMENT ********************\n");
+    //******************************************************************//
+
+    char *id_batiment;
+
+    asprintf(&sqlSELECT,"SELECT nom, id FROM batiments ORDER BY nom ASC");
+    int compteur = 1;
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("- %d : %s\n", compteur, sqlite3_column_text(requete, 0));
+                compteur++;
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+
+    printf("Sélectionnez le numéro correspondant au bâtiment voulu dans la liste ci-dessus :\n");
+    int numchoisi; // sert de selection des choix affichés dans la console
+    scanf("%d", &numchoisi);
+
+    asprintf(&sqlSELECT,"SELECT id FROM batiments ORDER BY nom ASC LIMIT 1 OFFSET %d", (numchoisi-1));
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                id_batiment = sqlite3_column_text(requete, 0);
+            }
+        }
+        //sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+
+    //******************************************************************//
+    printf("\n******************** SELECTION DATES *******************\n");
+    //******************************************************************//
+
+    char *AAAA_1;
+    char *MM_1;
+    char *JJ_1;
+    char *date_debut;
+    char *AAAA_2;
+    char *MM_2;
+    char *JJ_2;
+    char *date_fin;
+
+    int erreurDate = 1; // boolean pour savoir si les dates entrées sont bien chronologiquement correctes
+
+    //while (erreurDate == 1) {
+
+        printf("Entrez la date de début (au format \"AAAA-MM-JJ\")\n");
+        printf("AAAA = ");
+        scanf("%d", &AAAA_1);
+        printf("MM = ");
+        scanf("%d", &MM_1);
+        printf("JJ = ");
+        scanf("%d", &JJ_1);
+
+        asprintf(&date_debut, "%04d-%02d-%02d", AAAA_1, MM_1, JJ_1);
+
+        printf("\nEntrez la date de fin (au format \"AAAA-MM-JJ\")\n");
+        printf("AAAA = ");
+        scanf("%4d", &AAAA_2);
+        printf("MM = ");
+        scanf("%2d", &MM_2);
+        printf("JJ = ");
+        scanf("%2d", &JJ_2);
+
+        asprintf(&date_fin, "%04d-%02d-%02d", AAAA_2, MM_2, JJ_2);
+
+        //if (AAAA_1-AAAA_2 > 0) {
+                //|| ((AAAA_1-AAAA_2) == 0 && (MM_1-MM_2) > 0)
+                //|| ((AAAA_1-AAAA_2) == 0 && (MM_1-MM_2) == 0 && (JJ_1-JJ_2) > 0)) {
+               //printf("\n------\nErreur de date : la date de début doit être inférieure à date de fin.\n------\n\n");
+        //}
+        //else erreurDate = 0;
+
+    //}
+
+
+    char *fluide[] = {
+        "Elec",
+        "Gaz",
+        "Fioul",
+        //"Eau", pas utile pr le DPE
+        //"CO2", pas utile pr le DPE
+    };
+    int nb_fluides = 3; // à faire correspondre avec les fluides ci-dessus
+
+    printf("%s\n",fluide[1]);
+    // Calcul
+
+    double valeur_moyenne_conso;
+    int nb_jours;
+    double surface = getSurface(db, id_batiment);
+    double kWhEP;
+
+    for (int i=0; i<nb_fluides; i++) {
+        sqlSELECT = "";
+        asprintf(&sqlSELECT,"SELECT AVG(valeur), COUNT(valeur) FROM %s WHERE fluide='%s' AND date >= '%s' AND date <= '%s'", id_batiment, fluide[i], date_debut, date_fin);
+        printf("%s\n", sqlSELECT);
+        int compteur = 1;
+        codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+        if (!codeRetour){
+            while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+                codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+                if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                    valeur_moyenne_conso = sqlite3_column_double(requete, 0);
+                    nb_jours =  sqlite3_column_int(requete, 1);
+                    if (nb_jours != 0) {
+                        if (fluide[i] = "Elec") {
+                            kWhEP += 2.58*valeur_moyenne_conso;
+                        }
+                        else {
+                            kWhEP += valeur_moyenne_conso;
+                        }
+                    }
+                }
+            }
+            sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+        }
+
+    }
+
+    double DPE = (kWhEP*365.25)/surface;
+
+    printf("--- DPE ---\n");
+
+    printf("Le DPE de \"%s\" sur cette période est : %.2f kWhEP/m2/an\n\n", id_batiment, DPE);
+
+
+    printf("--- Représentation Graphique ---\n");
+
+    printf("\n[0-50]    |==> A ");
+    if (DPE <= 50) printf("---------------- %.2f", DPE);
+    printf("\n[51-90]   |====> B ");
+    if (DPE > 51 && DPE <= 90) printf("-------------- %.2f", DPE);
+    printf("\n[91-150]  |======> C ");
+    if (DPE > 91 && DPE <= 150) printf("------------ %.2f", DPE);
+    printf("\n[151-230] |========> D ");
+    if (DPE > 151 && DPE <= 230) printf("---------- %.2f", DPE);
+    printf("\n[231-330] |==========> E ");
+    if (DPE > 231 && DPE <= 330) printf("-------- %.2f", DPE);
+    printf("\n[331-450] |============> F ");
+    if (DPE > 331 && DPE <= 450) printf("------ %.2f", DPE);
+    printf("\n[> 450]   |==============> G ");
+    if (DPE > 450) printf("---- %.2f", DPE);
+    printf("\n");
+    printf("\n");
+
+    // Ne sert pas pour l'instant :
+    //printf("--- Emissions de CO2 ---\n");
+    //printf("[0-5]   --> A\n");
+    //printf("[6-10]  ----> B\n");
+    //printf("[11-20] ------> C\n");
+    //printf("[21-35] --------> D\n");
+    //printf("[36-55] ----------> E\n");
+    //printf("[56-80] ------------> F\n");
+    //printf("[> 80]  --------------> G\n");
+
+    return DPE;
+}
+
+int writeDataToCSV(sqlite3 *db){
+    int codeRetour;
+    int numchoisi; // sert de selection des choix affichés dans la console
+
+    sqlite3_stmt *requete;
+    char* sqlSELECT = "";
+
+    //******************************************************************//
+    printf("\n******************** SELECTION BATIMENT ********************\n");
+    //******************************************************************//
+
+    asprintf(&sqlSELECT,"SELECT nom, id FROM batiments ORDER BY nom ASC");
+    int compteur = 1;
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("- %d : %s\n", compteur, sqlite3_column_text(requete, 0));
+                compteur++;
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+
+    char *id_batiment;
+    printf("Sélectionnez le numéro correspondant au bâtiment voulu dans la liste ci-dessus :\n");
+    scanf("%d", &numchoisi);
+
+    asprintf(&sqlSELECT,"SELECT id FROM batiments ORDER BY nom ASC LIMIT 1 OFFSET %d", (numchoisi-1));
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                id_batiment = sqlite3_column_text(requete, 0);
+            }
+        }
+    }
+
+    //******************************************************************//
+    printf("\n******************** SELECTION FLUIDE ********************\n");
+    //******************************************************************//
+
+    asprintf(&sqlSELECT,"SELECT fluide FROM %s GROUP BY fluide ORDER BY fluide ASC", id_batiment);
+    compteur=1;
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                printf("- %d : %s\n", compteur, sqlite3_column_text(requete, 0));
+                compteur++;
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+
+    char *id_fluide;
+    printf("Sélectionnez le numéro correspondant au bâtiment voulu dans la liste ci-dessus :\n");
+    scanf("%d", &numchoisi);
+
+
+    asprintf(&sqlSELECT,"SELECT fluide FROM %s GROUP BY fluide ORDER BY fluide ASC LIMIT 1 OFFSET %d", id_batiment, (numchoisi-1));
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                id_fluide = sqlite3_column_text(requete, 0);
+            }
+        }
+    }
+
+    //******************************************************************//
+    printf("\n******************** SELECTION DATES *******************\n");
+    //******************************************************************//
+
+    char date_debut[15];
+    printf("Entrez la date de début (au format \"AAAA-MM-JJ\")\n");
+    scanf("%s", date_debut);
+
+    char date_fin[15];
+    printf("Entrez la date de fin (au format \"AAAA-MM-JJ\")\n");
+    scanf("%s", date_fin);
+
+
+
+    FILE * fichierCSV = NULL;
+    char cheminFichierCSV[80];
+    snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%sExport_%s_%s(%s-%s).csv", "../Générés/", id_batiment, id_fluide, date_debut, date_fin);
+    fichierCSV = fopen(cheminFichierCSV, "wb"); // notre fichier CSV à écrire - s'il n'existe pas, on le crée
+
+    fprintf(fichierCSV, "%s pour le batiment %s;Date;%s\n", id_fluide, id_batiment, id_fluide);
+
+
+    asprintf(&sqlSELECT,"SELECT date, valeur FROM %s WHERE fluide = '%s' AND date >= '%s' AND date <= '%s' ORDER BY date ASC", id_batiment, id_fluide, date_debut, date_fin);
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                fprintf(fichierCSV, ";%s;%.2f\n", sqlite3_column_text(requete, 0), sqlite3_column_double(requete, 1));
+            }
+        }
+        sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
+    }
+    fclose(fichierCSV);
+    printf("\n\nExport_%s_%s(%s-%s).csv a bien été créé dans le dossier \"Générés\"\n\n", id_batiment, id_fluide, date_debut, date_fin);
+    return 1;
+}
+

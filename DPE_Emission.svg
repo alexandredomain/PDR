@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg3039"
+   version="1.1"
+   inkscape:version="0.92.1 15371"
+   width="506.19141"
+   height="551.12299"
+   sodipodi:docname="DPE_Emission.svg">
+  <metadata
+     id="metadata3045">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3043" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1301"
+     inkscape:window-height="744"
+     id="namedview3041"
+     showgrid="false"
+     inkscape:zoom="0.82495792"
+     inkscape:cx="-142.11559"
+     inkscape:cy="-814.15267"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3039"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <rect
+     style="fill:#fafafa;fill-opacity:1;stroke:#000000;stroke-width:1.60000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect4256"
+     width="504.5914"
+     height="547.26019"
+     x="0.80000001"
+     y="0.80000001" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1.60000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 386.45655,1.3498502 V 550.32299"
+     id="path4258"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cc" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+     x="21.579813"
+     y="79.965668"
+     id="text3936"><tspan
+       sodipodi:role="line"
+       id="tspan3938"
+       x="21.579813"
+       y="79.965668"
+       style="font-size:17.06666756px;line-height:1.25;stroke-width:1.06666672"> </tspan></text>
+  <g
+     id="g4206"
+     transform="translate(11.809822,-6.7220598)">
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path3828"
+       d="M -4.7836754,51.623331 C 18.625967,51.383246 42.035983,51.394759 65.446426,51.394759 c 8.973728,9.434762 19.38848,17.623506 28.022976,27.36085 -11.010518,12.616645 -16.003542,17.983036 -26.738155,29.769521 -23.695232,0.004 -47.619051,-0.10592 -71.3142824,-0.10176 -0.121536,-56.767466 0.016533,-0.007 -0.20064,-56.799993 z"
+       style="fill:#f4ebff;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3940"
+       y="86.85714"
+       x="2.7428575"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-size:21.33333397px;line-height:1.25;stroke-width:1.06666672"
+         y="86.85714"
+         x="2.7428575"
+         id="tspan3942"
+         sodipodi:role="line">≤<tspan
+   id="tspan3944"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672">5</tspan></tspan></text>
+    <text
+       id="text3932-0"
+       y="90.388092"
+       x="51.360718"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="90.388092"
+         x="51.360718"
+         id="tspan3934-8"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">A</tspan></text>
+  </g>
+  <g
+     id="g4214"
+     transform="translate(11.809822,-6.0814005)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9"
+       d="m -4.7836754,118.60143 c 23.4096424,-0.24009 89.4863254,-0.22857 112.8967654,-0.22857 8.97373,9.43477 19.38848,17.6235 28.02297,27.36085 -11.01051,12.61665 -16.00354,17.98304 -26.73815,29.76951 -23.695228,0.004 -90.285714,-0.10592 -113.9809454,-0.10176 -0.121536,-56.76745 0.016533,-0.007 -0.20064,-56.79998 z"
+       style="fill:#e7d6fa;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932"
+       y="157.25714"
+       x="93.104759"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="157.25714"
+         x="93.104759"
+         id="tspan3934"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">B</tspan></text>
+    <text
+       id="text3967"
+       y="151.92381"
+       x="4.1178575"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672"
+         y="151.92381"
+         x="4.1178575"
+         id="tspan3969"
+         sodipodi:role="line">6 à 10</tspan></text>
+  </g>
+  <g
+     id="g4221"
+     transform="translate(11.809822,-5.4407574)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9-7"
+       d="M -4.7836754,185.57952 C 18.625968,185.33943 129.50266,185.35095 152.9131,185.35095 c 8.97373,9.43477 19.38848,17.6235 28.02297,27.36085 -11.01051,12.61665 -16.00354,17.98304 -26.73815,29.76951 -23.69523,0.004 -135.085723,-0.10592 -158.7809554,-0.10176 -0.121536,-56.76745 0.016533,-0.007 -0.20064,-56.79998 z"
+       style="fill:#dfc0fc;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932-8"
+       y="224.04684"
+       x="135.77785"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="224.04684"
+         x="135.77785"
+         id="tspan3934-9"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">C</tspan></text>
+    <text
+       id="text3967-4"
+       y="220.84685"
+       x="4.1178575"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672"
+         y="220.84685"
+         x="4.1178575"
+         id="tspan3969-2"
+         sodipodi:role="line">11 à 20</tspan></text>
+  </g>
+  <g
+     id="g4228"
+     transform="translate(11.809822,-4.8001195)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9-7-1"
+       d="M -4.7836754,252.55763 C 18.625968,252.31755 174.30266,252.32907 197.7131,252.32907 c 8.97373,9.43476 19.38847,17.6235 28.02296,27.36084 -11.01051,12.61665 -16.00353,17.98304 -26.73814,29.76951 -23.69523,0.004 -179.885723,-0.10592 -203.5809554,-0.10176 -0.121536,-56.76745 0.016533,-0.007 -0.20064,-56.79997 z"
+       style="fill:#d2a6fd;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932-8-5"
+       y="290.82996"
+       x="178.11203"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="290.82996"
+         x="178.11203"
+         id="tspan3934-9-6"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">D</tspan></text>
+    <text
+       id="text3967-4-4"
+       y="285.49661"
+       x="2.6803575"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672"
+         y="285.49661"
+         x="2.6803575"
+         id="tspan3969-2-2"
+         sodipodi:role="line">21 à 35</tspan></text>
+  </g>
+  <g
+     id="g4235"
+     transform="translate(11.809822,-4.1594896)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9-7-1-4"
+       d="m -4.7836754,319.53574 c 23.4096434,-0.24008 221.7529854,-0.22856 245.1634254,-0.22856 8.97373,9.43476 19.38847,17.6235 28.02297,27.36084 -11.01052,12.61665 -16.00353,17.98304 -26.73814,29.76952 -23.69524,0.004 -222.552383,-0.10592 -246.2476154,-0.10176 -0.121536,-56.76746 0.016533,-0.007 -0.20064,-56.79998 z"
+       style="fill:#b87bf9;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932-8-2"
+       y="359.09662"
+       x="222.91203"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="359.09662"
+         x="222.91203"
+         id="tspan3934-9-2"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">E</tspan></text>
+    <text
+       id="text3967-4-3"
+       y="353.76328"
+       x="4.378274"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672"
+         y="353.76328"
+         x="4.378274"
+         id="tspan3969-2-3"
+         sodipodi:role="line">36 à 55</tspan></text>
+  </g>
+  <g
+     id="g4242"
+     transform="translate(11.809822,-3.518845)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9-7-1-4-3"
+       d="m -4.7836754,386.51385 c 23.4096424,-0.24009 264.4196554,-0.22857 287.8300954,-0.22857 8.97373,9.43476 19.38847,17.6235 28.02297,27.36084 -11.01052,12.61665 -16.00353,17.98304 -26.73815,29.76952 -23.69523,0.004 -265.219044,-0.10592 -288.9142754,-0.10176 -0.121536,-56.76746 0.016533,-0.007 -0.20064,-56.79998 z"
+       style="fill:#a445fc;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932-8-2-8"
+       y="423.94131"
+       x="265.5787"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="423.94131"
+         x="265.5787"
+         id="tspan3934-9-2-5"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">F</tspan></text>
+    <text
+       id="text3967-4-3-1"
+       y="420.7413"
+       x="4.1074405"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672"
+         y="420.7413"
+         x="4.1074405"
+         id="tspan3969-2-3-4"
+         sodipodi:role="line">56 à 80</tspan></text>
+  </g>
+  <g
+     id="g4249"
+     transform="translate(11.809822,-2.8782004)">
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-9-7-1-4-3-1"
+       d="m -4.7836754,453.49195 c 23.4096414,-0.24009 307.0863254,-0.22857 330.4967654,-0.22857 8.97373,9.43476 19.38847,17.6235 28.02296,27.36084 -11.01051,12.61665 -16.00353,17.98304 -26.73814,29.76952 -23.69523,0.004 -307.885715,-0.10592 -331.5809454,-0.10176 -0.121536,-56.76746 0.016533,-0.007 -0.20064,-56.79998 z"
+       style="fill:#892cbb;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       id="text3932-8-2-8-9"
+       y="492.72775"
+       x="309.85889"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672;"
+       xml:space="preserve"><tspan
+         y="492.72775"
+         x="309.85889"
+         id="tspan3934-9-2-5-2"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672;fill:#000000;">G</tspan></text>
+    <text
+       id="text3967-4-3-1-7"
+       y="487.39444"
+       x="3.8366075"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.33333397px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;fill:#000000;fill-opacity:1;stroke-width:1.06666672"
+         y="487.39444"
+         x="3.8366075"
+         id="tspan3969-2-3-4-2"
+         sodipodi:role="line">&gt; 80</tspan></text>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+     x="5.9719796"
+     y="535.14551"
+     id="text4196"><tspan
+       sodipodi:role="line"
+       id="tspan4198"
+       x="5.9719796"
+       y="535.14551"
+       style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:23.46666718px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold Italic';stroke-width:1.06666672">Fortes émissions de CO2</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+     x="5.9719796"
+     y="29.245901"
+     id="text4200"><tspan
+       sodipodi:role="line"
+       id="tspan4202"
+       x="5.9719796"
+       y="29.245901"
+       style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:23.46666718px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold Italic';stroke-width:1.06666672">Faibles émissions de CO2</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+     x="-513.05023"
+     y="385.2518"
+     id="text3940-6"
+     transform="scale(-1,1)"><tspan
+       sodipodi:role="line"
+       id="tspan3942-6"
+       x="-513.05023"
+       y="385.2518"
+       style="font-size:21.33333397px;line-height:1.25;stroke-width:1.06666672"> </tspan></text>
+  <g
+     id="g4306"
+     transform="translate(-8.8963765,-4.6057643)">
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path3828-4"
+       d="m 508.13986,354.62374 c -23.40964,-0.24008 -46.81966,-0.22856 -70.2301,-0.22856 -8.97373,9.43476 -19.38848,17.6235 -28.02298,27.36084 11.01052,12.61665 16.00355,17.98304 26.73816,29.76953 23.69523,0.004 47.61905,-0.10592 71.31428,-0.10176 0.12154,-56.76747 -0.0165,-0.007 0.20064,-56.79999 z"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    <text
+       transform="scale(-1,1)"
+       id="text3932-0-1"
+       y="393.38852"
+       x="-503.19547"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#fffcfc;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       xml:space="preserve"><tspan
+         y="393.38852"
+         x="-503.19547"
+         id="tspan3934-8-3"
+         sodipodi:role="line"
+         style="font-size:34.13333511px;line-height:1.25;stroke-width:1.06666672">XXX</tspan></text>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.80000019px;line-height:0%;font-family:'BD Cartoon Shout';-inkscape-font-specification:'BD Cartoon Shout';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+     x="394.79868"
+     y="428.6087"
+     id="text4313"><tspan
+       sodipodi:role="line"
+       id="tspan4315"
+       x="394.79868"
+       y="428.6087"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.06666756px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:1.06666672">eqCO2/m²/an</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+     x="116.36957"
+     y="844.47125"
+     id="text3865"><tspan
+       sodipodi:role="line"
+       id="tspan3863"
+       x="116.36957"
+       y="879.86188" /></text>
+</svg>
