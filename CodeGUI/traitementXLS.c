@@ -30,7 +30,7 @@ void removeEmptyLinesCSV(char nomFichier[]) {
             c++;
         }
     }
-    printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
+    //printf("Suppression de %i lignes vides dans le fichier CSV... Ok.\n", c);
 
     fclose(fichierCSVtemp);
     remove(cheminFichierCSVtemp);
@@ -74,7 +74,7 @@ void XLStoCSV(char cheminDossier[], char nomFichier[]) {
 
         // process workbook if found
         if (pWB != NULL) {
-            printf("Conversion en cours... ");
+            //printf("Conversion en cours... ");
             // process all sheets
             for (i = 0; i < pWB -> sheets.count; i++) {
                 int lineWritten = 0;
@@ -115,7 +115,7 @@ void XLStoCSV(char cheminDossier[], char nomFichier[]) {
             }
             fclose(fichierCSVtemp);
             xls_close(pWB);
-            printf("Conversion terminée.\n");
+            //printf("Conversion terminée.\n");
         }
     }
 }

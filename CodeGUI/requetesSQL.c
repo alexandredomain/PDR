@@ -44,7 +44,7 @@ void requeteModele(sqlite3 *db, char *requete, char *intitule) {
     }
 
     codeRetour = sqlite3_exec(db, requete, NULL, 0, &feedbackErrorSQL);
-    printf("Code Retour dans la fonction requeteModele : %d --> %s\n", codeRetour, sqlite3_errmsg(db));
+    //printf("Code Retour dans la fonction requeteModele : %d --> %s\n", codeRetour, sqlite3_errmsg(db));
 
     if (codeRetour && feedbackErrorSQL != NULL){
         printf(strcat(prefix, "Erreur : "));
@@ -54,9 +54,9 @@ void requeteModele(sqlite3 *db, char *requete, char *intitule) {
         feedbackErrorSQL = NULL;
     }
 
-    else {
+    /*else {
         printf(strcat(prefix, "Ok.\n"));
-    }
+    }*/
     sqlite3_close_v2(db);
 }
 
@@ -69,6 +69,7 @@ void createTableBatiment(sqlite3 *db, char *nom) {
     asprintf(&requete, "CREATE TABLE IF NOT EXISTS %s (fluide TEXT, valeur REAL, date TEXT);", nom);
     char *intitule=NULL;
     asprintf(&intitule, "Création de la table \"%s\"", nom);
+    printf("%s\n",intitule);
     requeteModele(db, requete, intitule);
 }
 
@@ -77,6 +78,7 @@ void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom)
     asprintf(&requete, "INSERT INTO BATIMENTS (id, site, surface, nom) VALUES ('%s', '%s', '%s', '%s');", id, site, surface, nom);
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", id);
+    printf("%s\n",intitule);
     requeteModele(db, requete, intitule);
 }
 
@@ -93,6 +95,7 @@ void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_
     asprintf(&requete, "UPDATE %s SET %s = '%s' WHERE lower(%s) = lower('%s');", table, champ, value, condition_champ, condition_value);
     char *intitule=NULL;
     asprintf(&intitule, "Update de la table \"%s\" : %s %s = %s", table, champ, condition_value, value);
+    printf("%s\n",intitule);
     requeteModele(db, requete, intitule);
 }
 
@@ -128,9 +131,6 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
             char* sqlSELECT = "";
             asprintf(&sqlSELECT,"SELECT COUNT(*) FROM batiments WHERE lower(id) = lower('%s')", id_batiment);
             codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
-            printf("%s\n", sqlSELECT);
-            printf("%d\n", codeRetour);
-
             if (!codeRetour){
                 //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
                 while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
@@ -205,9 +205,9 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
              insertDataBatiment(db, batiment, fluide, valeur, date);
              fgets(line, 160, fichierCSV);
         }
-        if (feof(fichierCSV)) {
-            printf("Fin des entrées dans la BDD\n");
-        }
+        //if (feof(fichierCSV)) {
+            //printf("Fin des entrées du fichier CSV dans la BDD\n");
+        //}
         fclose(fichierCSV); // on ferme le fichier CSV
 
         remove(fichier); // on supprimer le CSV car ne sert plus à rien

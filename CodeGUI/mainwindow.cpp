@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 extern "C" {
     #include <requetesSQL.h>
+    #include <traitementXLS.h>
 }
 
 MainWindow::MainWindow(QWidget *parent) :
