@@ -530,7 +530,7 @@ double DPE(sqlite3 *db){
     return DPE;
 }
 
-int writeDataToCSV(sqlite3 *db){
+void writeDataToCSV(sqlite3 *db){
     int codeRetour;
     int numchoisi; // sert de selection des choix affichés dans la console
 
@@ -639,6 +639,5 @@ int writeDataToCSV(sqlite3 *db){
     }
     fclose(fichierCSV);
     printf("\n\nExport_%s_%s(%s-%s).csv a bien été créé dans le dossier \"Générés\"\n\n", id_batiment, id_fluide, date_debut, date_fin);
-    return 1;
 }
 
