@@ -58,7 +58,6 @@ void requeteModele(sqlite3 *db, char *requete, char *intitule) {
         printf(strcat(prefix, "Ok.\n"));
     }
     sqlite3_close_v2(db);
-    free(feedbackErrorSQL);
 }
 
 void createTableListeBatiments(sqlite3 *db) {
@@ -71,8 +70,6 @@ void createTableBatiment(sqlite3 *db, char *nom) {
     char *intitule=NULL;
     asprintf(&intitule, "Création de la table \"%s\"", nom);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom) {
@@ -81,8 +78,6 @@ void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom)
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", id);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur, char *jour) {
@@ -91,8 +86,6 @@ void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur,
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'une nouvelle ligne à la table \"%s\"", site);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_champ, char *condition_value) {
@@ -101,12 +94,11 @@ void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_
     char *intitule=NULL;
     asprintf(&intitule, "Update de la table \"%s\" : %s %s = %s", table, champ, condition_value, value);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
+
 int actualiserBatimentsEtSurfaces(sqlite3 *db) {
-    FILE* fichierCSVSurfaces = fopen("../Relevés/Surfaces.csv", "r");
+    FILE* fichierCSVSurfaces = fopen("../Surfaces.csv", "r");
 
     sqlite3_open_v2("../Générés/maBaseDeDonnees", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
 
@@ -130,7 +122,7 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         fgets(line, 160, fichierCSVSurfaces); // On met la deuxième ligne dans la variable line
 
         while (!feof(fichierCSVSurfaces))  { // tant que le fichier n'est pas fini
-            sscanf(line, "%[^;];%[^;];%[^;];%[^\n]", &nom_site, &id_batiment, &surface, &nom_batiment); // récupération des données de la ligne
+            sscanf(line, "%[^;];%[^;];%[^;];%[A-Za-zéèêàù&0-9_- ]", &nom_site, &id_batiment, &surface, &nom_batiment); // récupération des données de la ligne
 
             sqlite3_stmt *requete;
             char* sqlSELECT = "";
@@ -138,7 +130,6 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
             codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
             printf("%s\n", sqlSELECT);
             printf("%d\n", codeRetour);
-            //free(sqlSELECT);
 
             if (!codeRetour){
                 //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
@@ -161,6 +152,7 @@ int actualiserBatimentsEtSurfaces(sqlite3 *db) {
         }
 
         fclose(fichierCSVSurfaces);
+        // remove("../Surfaces.csv"); // à décommenter
         return 1;
     }
     sqlite3_close_v2(db);
@@ -217,7 +209,8 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
             printf("Fin des entrées dans la BDD\n");
         }
         fclose(fichierCSV); // on ferme le fichier CSV
-        //remove(fichier); // on supprimer le CSV car ne sert plus à rien
+
+        remove(fichier); // on supprimer le CSV car ne sert plus à rien
         return 1;
     }
     return 0;
@@ -230,7 +223,6 @@ void chercherDonneesMonoFluide(sqlite3 *db, char *nomBatiment, char *nomFluide, 
     char* sqlSELECT = "";
     asprintf(&sqlSELECT,"SELECT %s FROM %s WHERE fluide = '%s' AND date = '%s'", "valeur", nomBatiment, nomFluide, date);
     codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
-    free(sqlSELECT);
     if (!codeRetour){
         //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
         while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
@@ -434,30 +426,6 @@ double DPE(sqlite3 *db, char *id_batiment, int AAAA_1, int MM_1, int JJ_1, int A
     }
 
     double DPE = (kWhEP*365.25)/surface;
-
-//    printf("--- DPE ---\n");
-
-//    printf("Le DPE de \"%s\" sur cette période est : %.2f kWhEP/m2/an\n\n", id_batiment, DPE);
-
-
-//    printf("--- Représentation Graphique ---\n");
-
-//    printf("\n[0-50]    |==> A ");
-//    if (DPE <= 50) printf("---------------- %.2f", DPE);
-//    printf("\n[51-90]   |====> B ");
-//    if (DPE > 51 && DPE <= 90) printf("-------------- %.2f", DPE);
-//    printf("\n[91-150]  |======> C ");
-//    if (DPE > 91 && DPE <= 150) printf("------------ %.2f", DPE);
-//    printf("\n[151-230] |========> D ");
-//    if (DPE > 151 && DPE <= 230) printf("---------- %.2f", DPE);
-//    printf("\n[231-330] |==========> E ");
-//    if (DPE > 231 && DPE <= 330) printf("-------- %.2f", DPE);
-//    printf("\n[331-450] |============> F ");
-//    if (DPE > 331 && DPE <= 450) printf("------ %.2f", DPE);
-//    printf("\n[> 450]   |==============> G ");
-//    if (DPE > 450) printf("---- %.2f", DPE);
-//    printf("\n");
-//    printf("\n");
 
     return DPE;
 }

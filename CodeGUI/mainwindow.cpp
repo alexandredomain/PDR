@@ -25,30 +25,36 @@ void MainWindow::on_SelectBatiment_currentIndexChanged(int index)
     sqlite3 *db; // initialisation de la base de données
 
     const char * resultat ="";
-    QString texte;
-    QString ajout;
     int codeRetour;
+    QString surface;
     sqlite3_stmt *requete;
     char* sqlSELECT = "";
     asprintf(&sqlSELECT,"SELECT fluide FROM %s GROUP BY fluide ", ui->SelectBatiment->currentText().toStdString().c_str());
-    ui->zoneTexte->setText(sqlSELECT);
     ui->SelectFluide->clear();
 
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
 
     codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
-
-
     if (!codeRetour){
         //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
         while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
             codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
             if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
                 resultat = (const char*)sqlite3_column_text(requete, 0);
-                texte = ui->zoneTexte->toPlainText() + resultat + "\n";
-                ui->zoneTexte->clear();
-                ui->zoneTexte->setText(texte);
                 ui->SelectFluide->addItem(resultat);
+            }
+        }
+    }
+
+    asprintf(&sqlSELECT,"SELECT surface FROM batiments WHERE id = '%s'", ui->SelectBatiment->currentText().toStdString().c_str());
+    codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
+    if (!codeRetour){
+        //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
+        while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
+            codeRetour = sqlite3_step(requete); //on récupère une ligne dans la table
+            if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW){
+                surface = QString::number(sqlite3_column_int(requete, 0)) + " m²";
+                ui->txtEditSurface->setText(surface);
             }
         }
         sqlite3_finalize(requete); // libère les chaines "sqlite3_column_text" éventuellement à chaque appel de appel de "sqlite3_step" ou "sqlite3_finalize"
@@ -171,19 +177,19 @@ void MainWindow::on_btnDPE_clicked()
     char * F = "----------- ";
     char * G = "--------- ";
 
-    texte += "\n[0-50]       |==> A ";
+    texte += "\n[0-50]\t|==> A ";
     if (valueDPE <= 50) texte = texte + A + DPE_arrondi;
-    texte += "\n[51-90]     |====> B ";
+    texte += "\n[51-90]\t|====> B ";
     if (valueDPE > 51 && valueDPE <= 90) texte = texte + B + DPE_arrondi;
-    texte +="\n[91-150]   |======> C ";
+    texte +="\n[91-150]\t|======> C ";
     if (valueDPE > 91 && valueDPE <= 150) texte = texte + C + DPE_arrondi;
-    texte +="\n[151-230] |========> D ";
+    texte +="\n[151-230]\t|========> D ";
     if (valueDPE > 151 && valueDPE <= 230) texte = texte + D + DPE_arrondi;
-    texte +="\n[231-330] |==========> E ";
+    texte +="\n[231-330]\t|==========> E ";
     if (valueDPE > 231 && valueDPE <= 330) texte = texte + E + DPE_arrondi;
-    texte +="\n[331-450] |============> F ";
+    texte +="\n[331-450]\t|============> F ";
     if (valueDPE > 331 && valueDPE <= 450) texte = texte + F + DPE_arrondi;
-    texte +="\n[> 450]      |==============> G ";
+    texte +="\n[> 450]\t|==============> G ";
     if (valueDPE > 450) texte = texte + G + DPE_arrondi;
 
     ui->zoneDPE->setText(texte);

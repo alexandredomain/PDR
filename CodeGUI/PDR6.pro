@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     requetesSQL.c \
     sqlite3.c \
     xls.c \
-    xlstool.c
+    xlstool.c \
+    traitementXLS.c
 
 HEADERS  += mainwindow.h \
     brdb.c.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     xls.h \
     xlsstruct.h \
     xlstool.h \
-    xlstypes.h
+    xlstypes.h \
+    traitementXLS.h
 
 FORMS    += mainwindow.ui
 LIBS += -ldl -lpthread

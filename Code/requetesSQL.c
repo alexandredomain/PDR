@@ -463,8 +463,8 @@ double DPE(sqlite3 *db){
     int nb_jours;
     double surface = getSurface(db, id_batiment);
     double kWhEP;
-
-    for (int i=0; i<nb_fluides; i++) {
+    int i;
+    for (i=0; i<nb_fluides; i++) {
         sqlSELECT = "";
         asprintf(&sqlSELECT,"SELECT AVG(valeur), COUNT(valeur) FROM %s WHERE fluide='%s' AND date >= '%s' AND date <= '%s'", id_batiment, fluide[i], date_debut, date_fin);
         printf("%s\n", sqlSELECT);
