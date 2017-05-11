@@ -9,7 +9,7 @@ void versionSQLite() {
     printf("SQLite_version %s\n", sqlite3_libversion());
 }
 
-void openBDD(sqlite3 *db) {
+void openBDD(sqlite3 *db) { // fonctionne en C  mais pas en C++ --> on open/close dans toutes les fonctions en C++
     int codeRetour = 0;
     // remove("../Générés/maBaseDeDonnees"); // pour débug à supprimer ensuite
 
@@ -43,10 +43,9 @@ requeteModele(sqlite3 *db, char *requete, char *intitule) {
         feedbackErrorSQL = NULL;
     }
 
-    else {
+    /*else {
         printf(strcat(prefix, "Ok.\n"));
-    }
-    free(feedbackErrorSQL);
+    }*/
 }
 
 void createTableListeBatiments(sqlite3 *db) {
@@ -59,8 +58,7 @@ void createTableBatiment(sqlite3 *db, char *nom) {
     char *intitule=NULL;
     asprintf(&intitule, "Création de la table \"%s\"", nom);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
+    printf("%s\n", intitule);
 }
 
 void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom) {
@@ -68,9 +66,8 @@ void insertBatiment(sqlite3 *db, char *id, char *site, char *surface, char *nom)
     asprintf(&requete, "INSERT INTO BATIMENTS (id, site, surface, nom) VALUES ('%s', '%s', '%s', '%s');", id, site, surface, nom);
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'un nouveau batiment \"%s\" dans la table \"batiments\"", id);
+    printf("%s\n", intitule);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur, char *jour) {
@@ -79,8 +76,6 @@ void insertDataBatiment(sqlite3 *db, char *site, char *nom_fluide, char *valeur,
     char *intitule=NULL;
     asprintf(&intitule, "Insertion d'une nouvelle ligne à la table \"%s\"", site);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_champ, char *condition_value) {
@@ -88,9 +83,8 @@ void update(sqlite3 *db, char* table, char *champ, char *value, char *condition_
     asprintf(&requete, "UPDATE %s SET %s = '%s' WHERE lower(%s) = lower('%s');", table, champ, value, condition_champ, condition_value);
     char *intitule=NULL;
     asprintf(&intitule, "Update de la table \"%s\" : %s %s = %s", table, champ, condition_value, value);
+    printf("%s\n", intitule);
     requeteModele(db, requete, intitule);
-    free(requete);
-    free(intitule);
 }
 
 int actualiserBatimentsEtSurfaces(sqlite3 *db) {
@@ -196,9 +190,9 @@ int lectureEtInsertionData(sqlite3 *db, char fichier[]){
              insertDataBatiment(db, batiment, fluide, valeur, date);
              fgets(line, 160, fichierCSV);
         }
-        if (feof(fichierCSV)) {
+        /*if (feof(fichierCSV)) {
             printf("Fin des entrées dans la BDD\n");
-        }
+        }*/
         fclose(fichierCSV); // on ferme le fichier CSV
         remove(fichier); // on supprimer le CSV car ne sert plus à rien
         return 1;
@@ -413,39 +407,25 @@ double DPE(sqlite3 *db){
     char *JJ_2;
     char *date_fin;
 
-    int erreurDate = 1; // boolean pour savoir si les dates entrées sont bien chronologiquement correctes
+    printf("Entrez la date de début (au format \"AAAA-MM-JJ\")\n");
+    printf("AAAA = ");
+    scanf("%d", &AAAA_1);
+    printf("MM = ");
+    scanf("%d", &MM_1);
+    printf("JJ = ");
+    scanf("%d", &JJ_1);
 
-    //while (erreurDate == 1) {
+    asprintf(&date_debut, "%04d-%02d-%02d", AAAA_1, MM_1, JJ_1);
 
-        printf("Entrez la date de début (au format \"AAAA-MM-JJ\")\n");
-        printf("AAAA = ");
-        scanf("%d", &AAAA_1);
-        printf("MM = ");
-        scanf("%d", &MM_1);
-        printf("JJ = ");
-        scanf("%d", &JJ_1);
+    printf("\nEntrez la date de fin (au format \"AAAA-MM-JJ\")\n");
+    printf("AAAA = ");
+    scanf("%4d", &AAAA_2);
+    printf("MM = ");
+    scanf("%2d", &MM_2);
+    printf("JJ = ");
+    scanf("%2d", &JJ_2);
 
-        asprintf(&date_debut, "%04d-%02d-%02d", AAAA_1, MM_1, JJ_1);
-
-        printf("\nEntrez la date de fin (au format \"AAAA-MM-JJ\")\n");
-        printf("AAAA = ");
-        scanf("%4d", &AAAA_2);
-        printf("MM = ");
-        scanf("%2d", &MM_2);
-        printf("JJ = ");
-        scanf("%2d", &JJ_2);
-
-        asprintf(&date_fin, "%04d-%02d-%02d", AAAA_2, MM_2, JJ_2);
-
-        //if (AAAA_1-AAAA_2 > 0) {
-                //|| ((AAAA_1-AAAA_2) == 0 && (MM_1-MM_2) > 0)
-                //|| ((AAAA_1-AAAA_2) == 0 && (MM_1-MM_2) == 0 && (JJ_1-JJ_2) > 0)) {
-               //printf("\n------\nErreur de date : la date de début doit être inférieure à date de fin.\n------\n\n");
-        //}
-        //else erreurDate = 0;
-
-    //}
-
+    asprintf(&date_fin, "%04d-%02d-%02d", AAAA_2, MM_2, JJ_2);
 
     char *fluide[] = {
         "Elec",
@@ -456,7 +436,6 @@ double DPE(sqlite3 *db){
     };
     int nb_fluides = 3; // à faire correspondre avec les fluides ci-dessus
 
-    printf("%s\n",fluide[1]);
     // Calcul
 
     double valeur_moyenne_conso;
@@ -467,7 +446,6 @@ double DPE(sqlite3 *db){
     for (i=0; i<nb_fluides; i++) {
         sqlSELECT = "";
         asprintf(&sqlSELECT,"SELECT AVG(valeur), COUNT(valeur) FROM %s WHERE fluide='%s' AND date >= '%s' AND date <= '%s'", id_batiment, fluide[i], date_debut, date_fin);
-        printf("%s\n", sqlSELECT);
         int compteur = 1;
         codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
         if (!codeRetour){
@@ -493,14 +471,13 @@ double DPE(sqlite3 *db){
 
     double DPE = (kWhEP*365.25)/surface;
 
-    printf("--- DPE ---\n");
+    printf("\n\n---------------- DPE ----------------\n");
+    printf("Le DPE de \"%s\" sur cette période est : %.2f kWhEP/m2/an\n\n\n", id_batiment, DPE);
 
-    printf("Le DPE de \"%s\" sur cette période est : %.2f kWhEP/m2/an\n\n", id_batiment, DPE);
 
+    printf("------ Représentation Graphique ------\n");
 
-    printf("--- Représentation Graphique ---\n");
-
-    printf("\n[0-50]    |==> A ");
+    printf("[0-50]    |==> A ");
     if (DPE <= 50) printf("---------------- %.2f", DPE);
     printf("\n[51-90]   |====> B ");
     if (DPE > 51 && DPE <= 90) printf("-------------- %.2f", DPE);

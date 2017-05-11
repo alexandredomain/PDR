@@ -23,6 +23,8 @@ int main(int pintArgc, char * ptstrArgv[]) {
     actualiserBatimentsEtSurfaces(db);
     printf("***************************************************************************\n\n");
 
+    printf("********************** Ajout des données dans la base *********************\n");
+
     DIR *dir;
     struct dirent *ent;
     char cheminDossier[14] = "../Relevés/";
@@ -47,8 +49,8 @@ int main(int pintArgc, char * ptstrArgv[]) {
                 ) {
                   snprintf(cheminFichierCSV, sizeof(cheminFichierCSV), "%s%s%s", "../Générés/", nomFichier, ".txt");
 
-                  printf("--------------------------------------- ------------------------------------\n");
-                  printf("%s\n", cheminFichier);
+                  //printf("--------------------------------------- ------------------------------------\n");
+                  //printf("%s\n", cheminFichier);
 
                   XLStoCSV(cheminDossier, nomFichier);
                   removeEmptyLinesCSV(nomFichier);
@@ -63,13 +65,13 @@ int main(int pintArgc, char * ptstrArgv[]) {
       perror ("");
       return EXIT_FAILURE;
     }
+    printf("Terminé. Les données ont été ajoutées.\n");
+    printf("***************************************************************************\n\n");
+
 
 
     // Partie interaction avec l'utilisateur : choix de faire un DPE ou un export
-
-    printf("\n\n\n\n");
-    printf("----------------------------------------------------------------------------");
-    printf("\n\n\n\n");
+    printf("********************** Choix d'une action à effectuer *********************\n");
 
     int userChoice = 0;
 
@@ -89,10 +91,13 @@ int main(int pintArgc, char * ptstrArgv[]) {
         writeDataToCSV(db);
         break;
     default:
+        printf("***************************************************************************\n\n");
+        sqlite3_close_v2(&db);
         return 0;
         break;
     }
 
+    printf("***************************************************************************\n\n");
     sqlite3_close_v2(&db);
 
     return 0;
