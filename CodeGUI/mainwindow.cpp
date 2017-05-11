@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //ui->textedit->setText( "<span style=\"color: red\">" + textedit->text() + "</span>" );
+    ui->zoneTexte->setVisible(false); //Pas d'utilité pour le moment
 }
 
 MainWindow::~MainWindow()
@@ -78,10 +78,6 @@ void MainWindow::on_refreshBatiment_clicked()
     codeRetour = sqlite3_open_v2("../Générés/maBaseDeDonnees", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
 
     codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
-//    ajout = QString::number(codeRetour);
-//    texte = ui->debug->toPlainText() + ajout + "\n";
-//    ui->debug->clear();
-//    ui->debug->setText(texte);
     if (!codeRetour){
         //la préparation s'est bien déroulée on peut maintenant récupérer les résultats
         while (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
@@ -137,6 +133,17 @@ void MainWindow::on_pushButton_clicked()
     JJ_2 = ui->jourFin->toPlainText().toInt();
 
     writeDataToCSV(db, id_batiment, fluide, AAAA_1, MM_1, JJ_1, AAAA_2, MM_2, JJ_2 );
+
+    char *date_debut;
+    asprintf(&date_debut, "%04d-%02d-%02d", AAAA_1, MM_1, JJ_1);
+    char *date_fin;
+    asprintf(&date_fin, "%04d-%02d-%02d", AAAA_2, MM_2, JJ_2);
+    char *message;
+    asprintf(&message,"\n\nExport_%s_%s(%s-%s).csv a bien été créé dans le dossier \"Générés\"\n\n", id_batiment, fluide, date_debut, date_fin);
+    texte = ui->zoneDPE->toPlainText();
+    texte = texte + message;
+    ui->zoneDPE->setText(texte);
+
 }
 
 
