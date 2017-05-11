@@ -348,8 +348,6 @@ double getSurface(sqlite3 *db, char *id_batiment) {
     double surface;
 
     asprintf(&sqlSELECT,"SELECT surface FROM batiments WHERE lower(id)=lower('%s')", id_batiment);
-    printf("id bat %s\n", id_batiment);
-    printf("requete %s\n", sqlSELECT);
     codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
     if (!codeRetour){
         if (codeRetour == SQLITE_OK || codeRetour == SQLITE_ROW) { //tant qu'il y a des lignes disponibles on récupère ligne par ligne le résultat et on affiche les colonnes
@@ -398,10 +396,11 @@ double DPE(sqlite3 *db, char *id_batiment, int AAAA_1, int MM_1, int JJ_1, int A
     sqlite3_stmt *requete;
     char* sqlSELECT;
 
-    int codeRetour;    for (i=0; i<nb_fluides; i++) {
+    int codeRetour;
+    for (i=0; i<nb_fluides; i++) {
         sqlSELECT = "";
         asprintf(&sqlSELECT,"SELECT AVG(valeur), COUNT(valeur) FROM %s WHERE fluide='%s' AND date >= '%s' AND date <= '%s'", id_batiment, fluide[i], date_debut, date_fin);
-        printf("%s\n", sqlSELECT);
+        //printf("%s\n", sqlSELECT);
         int compteur = 1;
         codeRetour = sqlite3_prepare_v2(db, sqlSELECT, strlen(sqlSELECT), &requete, NULL);
         if (!codeRetour){
